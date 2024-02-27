@@ -23,3 +23,4 @@ rootProject.name = "My Application"
 include(":app")
 include(":libs:data")
 include(":libs:domain")
+include(":libs:data:benchmark")

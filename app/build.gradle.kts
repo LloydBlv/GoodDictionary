@@ -40,13 +40,28 @@ android {
         compose = true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.1"
+        kotlinCompilerExtensionVersion = "1.5.9"
+    }
+    testOptions {
+        unitTests.isReturnDefaultValues = true
+        unitTests.isIncludeAndroidResources = true
     }
     packaging {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
     }
+
+//    sourceSets {
+//        getByName("test") {
+//            resources.srcDirs("src/test/resources")
+//        }
+//        getByName("androidTest") {
+//            resources.srcDirs("src/androidTest/resources")
+//        }
+//    }
+
+
 }
 
 dependencies {
