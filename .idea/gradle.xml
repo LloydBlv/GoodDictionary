@@ -11,6 +11,7 @@
             <option value="$PROJECT_DIR$/app" />
             <option value="$PROJECT_DIR$/libs" />
             <option value="$PROJECT_DIR$/libs/data" />
+            <option value="$PROJECT_DIR$/libs/domain" />
           </set>
         </option>
         <option name="resolveExternalAnnotations" value="false" />
