@@ -1,13 +1,17 @@
 package com.example.benchmark
 
 import android.app.Application
+import android.content.ContentValues
+import android.database.sqlite.SQLiteDatabase.CONFLICT_REPLACE
 import androidx.benchmark.junit4.BenchmarkRule
 import androidx.benchmark.junit4.measureRepeated
 import androidx.room.Room
+import androidx.room.RoomDatabase
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.example.data.AppDatabase
 import com.example.data.DictionaryLoaderDefault
+import com.example.data.SyncDictionaryDefault
 import com.example.data.WordEntity
 import com.example.data.WordsDao
 import kotlinx.coroutines.Dispatchers
@@ -48,10 +52,71 @@ class ExampleBenchmark {
         database.close()
     }
 
+    private fun createInMemoryDb(): AppDatabase {
+        return Room.inMemoryDatabaseBuilder(
+            ApplicationProvider.getApplicationContext(),
+            AppDatabase::class.java
+        ).allowMainThreadQueries().build()
+    }
+    private fun createDiskDb(): AppDatabase {
+        return Room.databaseBuilder(
+            ApplicationProvider.getApplicationContext(),
+            AppDatabase::class.java,
+            "words_database"
+        ).allowMainThreadQueries().build()
+    }
     @Test
-    fun chunk1000() {
-        val app = ApplicationProvider.getApplicationContext<Application>()
-        val words = (1..370150).map { "$it" }.asSequence()
+    fun memoryDb_Dao_no_chunk() {
+        benchmarkRule.measureRepeated {
+            val database = runWithTimingDisabled { createInMemoryDb() }
+            val syncDictionary = SyncDictionaryDefault(database)
+            syncDictionary.insertUsingDao(createWordsSequence())
+        }
+    }
+    @Test
+    fun diskDb_Dao_no_chunk() {
+        benchmarkRule.measureRepeated {
+            val database = runWithTimingDisabled { createDiskDb() }
+            val syncDictionary = SyncDictionaryDefault(database)
+            syncDictionary.insertUsingDao(createWordsSequence())
+        }
+    }
+    @Test
+    fun memoryDb_sqlite_no_chunk() {
+        benchmarkRule.measureRepeated {
+            val database = runWithTimingDisabled { createInMemoryDb() }
+            val syncDictionary = SyncDictionaryDefault(database)
+            syncDictionary.insertUsingSqlite(createWordsSequence())
+        }
+    }
+    @Test
+    fun memoryDb_sqlite_1000_chunk() {
+        benchmarkRule.measureRepeated {
+            val database = runWithTimingDisabled { createInMemoryDb() }
+            val syncDictionary = SyncDictionaryDefault(database, chunkSize = 1000)
+            syncDictionary.insertUsingSqlite(createWordsSequence())
+        }
+    }
+    @Test
+    fun memoryDb_sqlite_10_000_chunk() {
+        benchmarkRule.measureRepeated {
+            val database = runWithTimingDisabled { createInMemoryDb() }
+            val syncDictionary = SyncDictionaryDefault(database, chunkSize = 10_000)
+            syncDictionary.insertUsingSqlite(createWordsSequence())
+        }
+    }
+    @Test
+    fun diskDb_sqlite_no_chunk() {
+        benchmarkRule.measureRepeated {
+            val database = runWithTimingDisabled { createInMemoryDb() }
+            val syncDictionary = SyncDictionaryDefault(database)
+            syncDictionary.insertUsingSqlite(createWordsSequence())
+        }
+    }
+
+    @Test
+    fun chunk1000_with_sqlite() {
+        val words = createWordsSequence()
 
         benchmarkRule.measureRepeated {
             val database = runWithTimingDisabled { Room.inMemoryDatabaseBuilder(
@@ -59,17 +124,24 @@ class ExampleBenchmark {
                 AppDatabase::class.java
             ).allowMainThreadQueries().build() }
 
-            val wordsDao = runWithTimingDisabled { database.wordDao() }
-            words.chunked(1000)
+            val db = database.openHelper.writableDatabase
+            db.beginTransaction()
+
+            words.chunked(10_000)
                 .forEach {
-                    wordsDao.insert(it.map { WordEntity(word = it) })
+                    val values = ContentValues()
+                    it.forEach { values.put("word", it) }
+                    db.insert("words", CONFLICT_REPLACE, values)
                 }
+            db.setTransactionSuccessful()
+            db.endTransaction()
         }
+        runBlocking { assert(wordsDao.getAllWords().size == 370150) }
     }
-    @Test
+
     fun chunk2000() {
         val app = ApplicationProvider.getApplicationContext<Application>()
-        val words = (1..370150).map { "$it" }.asSequence()
+        val words = createWordsSequence()
 
         benchmarkRule.measureRepeated {
             val database = runWithTimingDisabled { Room.inMemoryDatabaseBuilder(
@@ -84,10 +156,10 @@ class ExampleBenchmark {
                 }
         }
     }
-    @Test
+
     fun chunk3000() {
         val app = ApplicationProvider.getApplicationContext<Application>()
-        val words = (1..370150).map { "$it" }.asSequence()
+        val words = createWordsSequence()
 
         benchmarkRule.measureRepeated {
             val database = runWithTimingDisabled { Room.inMemoryDatabaseBuilder(
@@ -102,10 +174,10 @@ class ExampleBenchmark {
                 }
         }
     }
-    @Test
+
     fun chunk4000() {
         val app = ApplicationProvider.getApplicationContext<Application>()
-        val words = (1..370150).map { "$it" }.asSequence()
+        val words = createWordsSequence()
 
         benchmarkRule.measureRepeated {
             val database = runWithTimingDisabled { Room.inMemoryDatabaseBuilder(
@@ -120,10 +192,10 @@ class ExampleBenchmark {
                 }
         }
     }
-    @Test
+
     fun chunk5000() {
         val app = ApplicationProvider.getApplicationContext<Application>()
-        val words = (1..370150).map { "$it" }.asSequence()
+        val words = createWordsSequence()
 
         benchmarkRule.measureRepeated {
             val database = runWithTimingDisabled { Room.inMemoryDatabaseBuilder(
@@ -138,10 +210,10 @@ class ExampleBenchmark {
                 }
         }
     }
-    @Test
+
     fun chunk6000() {
         val app = ApplicationProvider.getApplicationContext<Application>()
-        val words = (1..370150).map { "$it" }.asSequence()
+        val words = createWordsSequence()
 
         benchmarkRule.measureRepeated {
             val database = runWithTimingDisabled { Room.inMemoryDatabaseBuilder(
@@ -156,10 +228,10 @@ class ExampleBenchmark {
                 }
         }
     }
-    @Test
+
     fun chunk7000() {
         val app = ApplicationProvider.getApplicationContext<Application>()
-        val words = (1..370150).map { "$it" }.asSequence()
+        val words = createWordsSequence()
 
         benchmarkRule.measureRepeated {
             val database = runWithTimingDisabled { Room.inMemoryDatabaseBuilder(
@@ -174,10 +246,10 @@ class ExampleBenchmark {
                 }
         }
     }
-    @Test
+
     fun chunk8000() {
         val app = ApplicationProvider.getApplicationContext<Application>()
-        val words = (1..370150).map { "$it" }.asSequence()
+        val words = createWordsSequence()
 
         benchmarkRule.measureRepeated {
             val database = runWithTimingDisabled { Room.inMemoryDatabaseBuilder(
@@ -192,10 +264,10 @@ class ExampleBenchmark {
                 }
         }
     }
-    @Test
+
     fun chunk250() {
         val app = ApplicationProvider.getApplicationContext<Application>()
-        val words = (1..370150).map { "$it" }.asSequence()
+        val words = createWordsSequence()
 
         benchmarkRule.measureRepeated {
             val database = runWithTimingDisabled { Room.inMemoryDatabaseBuilder(
@@ -210,10 +282,10 @@ class ExampleBenchmark {
                 }
         }
     }
-    @Test
+
     fun chunk500() {
         val app = ApplicationProvider.getApplicationContext<Application>()
-        val words = (1..370150).map { "$it" }.asSequence()
+        val words = createWordsSequence()
 
         benchmarkRule.measureRepeated {
             val database = runWithTimingDisabled { Room.inMemoryDatabaseBuilder(
@@ -228,4 +300,6 @@ class ExampleBenchmark {
                 }
         }
     }
+
+    private fun createWordsSequence() = (1..370150).map { "$it" }.asSequence()
 }
