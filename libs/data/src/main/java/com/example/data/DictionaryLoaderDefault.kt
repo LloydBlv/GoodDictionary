@@ -7,15 +7,16 @@ import java.io.BufferedReader
 import java.io.File
 
 class DictionaryLoaderDefault (
-    private val chunkSize: Int = 1000,
+    private val chunkSize: Int = 500,
     private val dispatcher: CoroutineDispatcher
 ): DictionaryLoader {
 
 
     override suspend fun insertWords(words: Sequence<String>, dao: WordsDao) {
-        words.chunked(500)
+        var sequence = 0L
+        words.chunked(chunkSize)
             .forEach {
-                dao.insertAll(it.map { WordEntity(word = it) })
+                dao.insertAll(it.map { WordEntity(word = it, sequence = sequence++) })
             }
     }
 

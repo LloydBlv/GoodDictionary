@@ -3,21 +3,14 @@ package com.example.data
 import android.app.Application
 import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
-import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
 import org.junit.After
-
+import org.junit.Assert.assertEquals
+import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-
-import org.junit.Assert.*
-import org.junit.Before
-import org.junit.internal.Classes.getClass
-import java.io.File
-import java.nio.charset.StandardCharsets
-import kotlin.io.path.listDirectoryEntries
 
 /**
  * Instrumented test, which will execute on an Android device.
@@ -46,7 +39,7 @@ class ExampleInstrumentedTest {
     @Test
     fun useAppContext() = runBlocking {
 
-        val dictionaryLoader = DictionaryLoaderDefault(Dispatchers.IO)
+        val dictionaryLoader = DictionaryLoaderDefault(dispatcher = Dispatchers.IO)
         val app = ApplicationProvider.getApplicationContext<Application>()
         app.assets.use {
             val reader = it.open("words_alpha2.txt").bufferedReader()

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="show_word_details">Show word details</string>
+    <string name="search">Search</string>
+    <string name="clear_query">Clear query</string>
+</resources>
