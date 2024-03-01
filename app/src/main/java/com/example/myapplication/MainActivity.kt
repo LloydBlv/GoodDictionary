@@ -6,31 +6,32 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import com.example.myapplication.ui.theme.MyApplicationTheme
-import com.example.words_list.WordsListScreen
 import dagger.hilt.android.AndroidEntryPoint
 
 
+enum class Screens {
+    Splash,
+    WordsList,
+    WordDetail
+}
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
+        installSplashScreen()
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
             MyApplicationTheme {
-                val state by remember {
-                    mutableStateOf("")
-                }
-                WordsListScreen()
+                MainContent()
             }
         }
 
     }
+
 }
 
 @Composable

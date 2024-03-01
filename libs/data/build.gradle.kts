@@ -36,6 +36,7 @@ android {
 
 dependencies {
 
+    implementation(project(":libs:domain"))
     implementation(libs.androidx.room.runtime)
     implementation(libs.androidx.room.ktx)
     implementation(libs.androidx.paging.common.ktx)

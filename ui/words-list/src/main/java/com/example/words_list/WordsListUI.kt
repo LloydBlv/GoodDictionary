@@ -35,7 +35,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
@@ -43,25 +43,33 @@ import androidx.paging.compose.itemContentType
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun WordsListScreen(modifier: Modifier = Modifier) {
+fun WordsListScreen(
+    modifier: Modifier = Modifier,
+    navigateToDetails: (id: Long) -> Unit
+) {
     Scaffold(
         modifier = Modifier.fillMaxSize(),
-        content = { WordsScreenContent(modifier = modifier.padding(it)) }
+        content = {
+            WordsScreenContent(
+                modifier = modifier.padding(it),
+                navigateToDetails
+            )
+        }
     )
 
 }
 
 @Composable
-private fun WordsScreenContent(modifier: Modifier) {
+private fun WordsScreenContent(modifier: Modifier, navigateToDetails: (id: Long) -> Unit) {
     Column(modifier = modifier) {
         SearchBarUi()
-        WordsListUi()
+        WordsListUi(navigateToDetails = navigateToDetails)
     }
 }
 
 @Composable
 fun SearchBarUi(modifier: Modifier = Modifier) {
-    val viewModel = viewModel<WordsListViewModel>()
+    val viewModel = hiltViewModel<WordsListViewModel>()
     val query by viewModel.query.collectAsState(initial = "")
     DockedSearchBar(
         modifier = modifier
@@ -70,7 +78,7 @@ fun SearchBarUi(modifier: Modifier = Modifier) {
         query = query,
         onQueryChange = viewModel::onQueryChanged,
         onSearch = viewModel::onQueryChanged,
-        active = true,
+        active = false,
         onActiveChange = {},
         content = {},
         trailingIcon = {
@@ -90,8 +98,11 @@ fun SearchBarUi(modifier: Modifier = Modifier) {
 }
 
 @Composable
-private fun ColumnScope.WordsListUi(modifier: Modifier = Modifier) {
-    val viewModel = viewModel<WordsListViewModel>()
+private fun ColumnScope.WordsListUi(
+    modifier: Modifier = Modifier,
+    navigateToDetails: (id: Long) -> Unit
+) {
+    val viewModel = hiltViewModel<WordsListViewModel>()
     val lazyPagingItems = viewModel.items2.collectAsLazyPagingItems()
 
     val count = lazyPagingItems.itemCount
@@ -113,19 +124,24 @@ private fun ColumnScope.WordsListUi(modifier: Modifier = Modifier) {
             }
 
             lazyPagingItems.loadState.refresh is LoadState.NotLoading -> {
-                WordsList(modifier, count, lazyPagingItems)
+                WordsList(
+                    modifier = modifier,
+                    count = count,
+                    lazyPagingItems = lazyPagingItems,
+                    navigateToDetails = navigateToDetails
+                )
             }
         }
     }
 }
 
 
-
 @Composable
 private fun WordsList(
     modifier: Modifier,
     count: Int,
-    lazyPagingItems: LazyPagingItems<PagingUiItem>
+    lazyPagingItems: LazyPagingItems<PagingUiItem>,
+    navigateToDetails: (id: Long) -> Unit
 ) {
     LazyColumn(
         modifier = modifier.fillMaxSize(),
@@ -138,7 +154,7 @@ private fun WordsList(
         ) { index ->
             when (val item = lazyPagingItems[index]) {
                 is PagingUiItem.Header -> HeaderComposable(item)
-                is PagingUiItem.WordItem -> WordItemComposable(item)
+                is PagingUiItem.WordItem -> WordItemComposable(item, navigateToDetails)
                 else -> {}
             }
         }
@@ -148,15 +164,18 @@ private fun WordsList(
 @Composable
 fun LazyItemScope.HeaderComposable(header: PagingUiItem.Header) {
     Text(
-        text = "Header for ${header.letter}",
+        text = "${header.letter}",
         style = MaterialTheme.typography.headlineLarge.copy(fontSize = 48.sp)
     )
 }
 
 @Composable
-fun LazyItemScope.WordItemComposable(wordItem: PagingUiItem.WordItem) {
+fun LazyItemScope.WordItemComposable(
+    wordItem: PagingUiItem.WordItem,
+    navigateToDetails: (id: Long) -> Unit
+) {
     androidx.compose.material3.ListItem(
-        modifier = Modifier.clickable { },
+        modifier = Modifier.clickable { navigateToDetails.invoke(wordItem.id) },
         headlineContent = {
             Text(
                 text = wordItem.word,
@@ -164,7 +183,7 @@ fun LazyItemScope.WordItemComposable(wordItem: PagingUiItem.WordItem) {
             )
         },
         trailingContent = {
-            IconButton(onClick = { /*TODO*/ }, content = {
+            IconButton(onClick = { navigateToDetails.invoke(wordItem.id) }, content = {
                 Icon(
                     imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
                     contentDescription = stringResource(id = R.string.show_word_details)

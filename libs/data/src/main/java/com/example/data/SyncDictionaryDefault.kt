@@ -3,12 +3,15 @@ package com.example.data
 import android.content.ContentValues
 import android.database.sqlite.SQLiteDatabase
 import androidx.sqlite.db.SupportSQLiteDatabase
+import javax.inject.Inject
 
 
-class SyncDictionaryDefault(
+class SyncDictionaryDefault @Inject constructor(
     private val database: AppDatabase,
-    private val chunkSize: Int? = null
 ) : SyncDictionary {
+
+    val chunkSize: Int? = null
+
     override fun insertUsingSqlite(words: Sequence<String>) {
         val db = database.openHelper.writableDatabase
         try {

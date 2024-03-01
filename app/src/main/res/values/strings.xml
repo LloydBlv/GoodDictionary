@@ -1,3 +1,4 @@
 <resources>
-    <string name="app_name">My Application</string>
+    <string name="app_name">Good dictionary</string>
+    <string name="go_back">Go back</string>
 </resources>

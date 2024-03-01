@@ -15,13 +15,23 @@ interface WordsDao {
     @Query("select * from words")
     fun observeWords(): Flow<List<WordEntity>>
 
+    @Query("DELETE FROM words WHERE rowid = :id")
+    suspend fun deleteById(id: Long)
+    @Query("SELECT * FROM words WHERE rowid = :id")
+    fun getWordById(id: Long): Flow<WordEntity?>
+
     @Query("select * from words")
     suspend fun getAllWords(): List<WordEntity>
 
+    @Query("SELECT COUNT(*) FROM words")
+    suspend fun getCount(): Long
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAll(words: List<WordEntity>)
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(words: List<WordEntity>)
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(word: WordEntity)
 
@@ -33,15 +43,18 @@ interface WordsDao {
         @ColumnInfo(name = "firstChar") val firstCharacter: String,
         @ColumnInfo(name = "words") val words: String // This will be a concatenated string of words
     )
+
     @Query("SELECT * FROM words ORDER BY rowid ASC")
     fun allWordsPaged(): PagingSource<Int, WordEntity>
 
     @Query("SELECT * FROM words WHERE word LIKE :query ORDER BY rowid ASC")
     fun filtered1(query: String): PagingSource<Int, WordEntity>
 
-    @Query("SELECT snippet(wordsFts) FROM words JOIN wordsFts "+
-            "ON words.rowid == wordsFts.rowid WHERE wordsFts.word "+
-            "MATCH :search ORDER BY sequence")
+    @Query(
+        "SELECT snippet(wordsFts) FROM words JOIN wordsFts " +
+                "ON words.rowid == wordsFts.rowid WHERE wordsFts.word " +
+                "MATCH :search ORDER BY sequence"
+    )
     fun filtered(search: String): PagingSource<Int, String>
 
 }

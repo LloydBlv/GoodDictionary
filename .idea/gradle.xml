@@ -13,6 +13,8 @@
             <option value="$PROJECT_DIR$/common" />
             <option value="$PROJECT_DIR$/common/compose" />
             <option value="$PROJECT_DIR$/common/ui-compose" />
+            <option value="$PROJECT_DIR$/features" />
+            <option value="$PROJECT_DIR$/features/dictionary-loader" />
             <option value="$PROJECT_DIR$/libs" />
             <option value="$PROJECT_DIR$/libs/data" />
             <option value="$PROJECT_DIR$/libs/data/benchmark" />
