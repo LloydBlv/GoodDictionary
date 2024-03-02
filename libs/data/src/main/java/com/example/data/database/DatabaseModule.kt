@@ -1,4 +1,4 @@
-package com.example.data
+package com.example.data.database
 
 import android.content.Context
 import androidx.room.Room
@@ -26,7 +26,7 @@ interface DatabaseModule {
         }
         @Provides
         @Singleton
-        fun provideWordsDao(appDatabase: AppDatabase): WordsDao{
+        fun provideWordsDao(appDatabase: AppDatabase): WordsDao {
             return appDatabase.wordDao()
         }
     }

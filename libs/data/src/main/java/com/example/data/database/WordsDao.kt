@@ -1,4 +1,4 @@
-package com.example.data
+package com.example.data.database
 
 import androidx.lifecycle.LiveData
 import androidx.paging.PagingSource
@@ -24,7 +24,7 @@ interface WordsDao {
     suspend fun getAllWords(): List<WordEntity>
 
     @Query("SELECT COUNT(*) FROM words")
-    suspend fun getCount(): Long
+    fun getCount(): Flow<Long>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAll(words: List<WordEntity>)

@@ -35,7 +35,7 @@ fun WordDetailScreen(
     onBackPressed: () -> Unit,
 ) {
     val viewModel = hiltViewModel<DetailViewModel>()
-    val state by viewModel.state.collectAsState()
+    val state: DetailViewModel.DetailUiState by viewModel.state.collectAsState()
     val snackbarHostState = remember { SnackbarHostState() }
     Scaffold(
         topBar = {
@@ -49,7 +49,13 @@ fun WordDetailScreen(
                     }
                 },
                 title = {
-                    Text(text = "Word details")
+                    Text(
+                        text = if (state.count > 0) {
+                            "Word details from ${state.count} words"
+                        } else {
+                            "Word details"
+                        }
+                    )
                 })
         },
         modifier = modifier,
@@ -59,22 +65,20 @@ fun WordDetailScreen(
             modifier = modifier.padding(it),
             contentAlignment = Alignment.Center
         ) {
-            when (state) {
-                is DetailViewModel.DetailUiState.Loaded -> {
+            when {
+                state.isLoading -> CircularProgressIndicator()
+
+                state.word != null ->
                     Text(
-                        text = (state as DetailViewModel.DetailUiState.Loaded).word.word,
+                        text = state.word!!.word,
                         fontSize = 55.sp
                     )
 
-                }
-
-                DetailViewModel.DetailUiState.Loading -> {
-                    CircularProgressIndicator()
-
-                }
             }
+
         }
     }
+
     LaunchedEffect(Unit) {
         val result = snackbarHostState.showSnackbar(
             "Remove word?",

@@ -37,6 +37,9 @@ android {
 }
 
 dependencies {
+    implementation("androidx.work:work-runtime-ktx:2.9.0")
+    implementation(project(":feature:dictionary-sync"))
+
     implementation(project(":libs:domain"))
     implementation(libs.androidx.material3)
     implementation(libs.androidx.hilt.navigation.compose)

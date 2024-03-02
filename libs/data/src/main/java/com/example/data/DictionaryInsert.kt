@@ -1,6 +1,6 @@
 package com.example.data
 
-interface SyncDictionary {
+interface DictionaryInsert {
     fun insertUsingSqlite(words: Sequence<String>)
     fun insertUsingDao(words: Sequence<String>)
 }

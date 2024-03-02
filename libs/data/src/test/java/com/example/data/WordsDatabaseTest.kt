@@ -12,6 +12,9 @@ import assertk.assertions.isEqualTo
 import assertk.assertions.isTrue
 import assertk.assertions.prop
 import com.example.data.TestData.generateTestWords
+import com.example.data.database.AppDatabase
+import com.example.data.database.WordEntity
+import com.example.data.database.WordsDao
 import kotlinx.coroutines.test.runTest
 import org.junit.After
 import org.junit.Before

@@ -11,10 +11,10 @@ import assertk.assertions.hasSize
 import assertk.assertions.isEqualTo
 import assertk.assertions.isNotNull
 import assertk.assertions.isTrue
-import com.example.data.AppDatabase
+import com.example.data.database.AppDatabase
 import com.example.data.TestData
-import com.example.data.WordEntity
-import com.example.data.WordsDao
+import com.example.data.database.WordEntity
+import com.example.data.database.WordsDao
 import kotlinx.coroutines.test.runTest
 import org.junit.After
 import org.junit.Before

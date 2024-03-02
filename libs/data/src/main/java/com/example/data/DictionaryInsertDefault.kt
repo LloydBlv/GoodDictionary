@@ -1,14 +1,18 @@
 package com.example.data
 
 import android.content.ContentValues
+import android.database.sqlite.SQLiteConstraintException
 import android.database.sqlite.SQLiteDatabase
+import android.util.Log
 import androidx.sqlite.db.SupportSQLiteDatabase
+import com.example.data.database.AppDatabase
+import com.example.data.database.WordEntity
 import javax.inject.Inject
 
 
-class SyncDictionaryDefault @Inject constructor(
+class DictionaryInsertDefault @Inject constructor(
     private val database: AppDatabase,
-) : SyncDictionary {
+) : DictionaryInsert {
 
     val chunkSize: Int? = null
 
@@ -66,6 +70,8 @@ class SyncDictionaryDefault @Inject constructor(
                 rowId++
             }
             db.setTransactionSuccessful()
+        }catch (sqlConstraint: SQLiteConstraintException){
+            Log.e("duplicated", "with id=${sqlConstraint}")
         } finally {
             db.endTransaction()
         }

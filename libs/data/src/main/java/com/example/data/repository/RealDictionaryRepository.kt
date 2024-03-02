@@ -1,9 +1,10 @@
-package com.example.data
+package com.example.data.repository
 
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.map
+import com.example.data.database.WordsDao
 import com.example.domain.DictionaryRepository
 import com.example.domain.DictionaryWord
 import kotlinx.coroutines.flow.Flow
@@ -16,6 +17,10 @@ class RealDictionaryRepository @Inject constructor(
 ) : DictionaryRepository {
     override suspend fun deleteWord(wordId: Long) {
         dao.deleteById(wordId)
+    }
+
+    override fun getCount(): Flow<Long> {
+        return dao.getCount()
     }
 
     override fun getWord(wordId: Long): Flow<DictionaryWord> {

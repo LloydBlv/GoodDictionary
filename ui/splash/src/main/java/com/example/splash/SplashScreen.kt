@@ -1,5 +1,6 @@
 package com.example.splash
 
+import android.util.Log
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
@@ -17,20 +18,26 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.example.domain.DictionaryState
-import kotlinx.coroutines.delay
+import com.example.dictionary_sync.DictionarySyncStateWatcher
 
 @Composable
 fun SplashScreen(
     modifier: Modifier = Modifier,
     navigateToWordsList: () -> Unit
 ) {
-    val viewModel = hiltViewModel<MainViewModel>()
-    val state by viewModel.state.collectAsState()
-    LaunchedEffect(key1 = state) {
-        if (state is DictionaryState.Loaded) {
-            delay(500)
-            navigateToWordsList()
+    val viewModel = hiltViewModel<SplashViewModel>()
+    val syncState: DictionarySyncStateWatcher.State by viewModel.state.collectAsState()
+
+    LaunchedEffect(key1 = syncState) {
+        Log.e("worker", "syncState=${syncState}")
+        if (syncState is DictionarySyncStateWatcher.State.Loaded) {
+            navigateToWordsList.invoke()
+            return@LaunchedEffect
+        } else if (syncState is DictionarySyncStateWatcher.State.Progress) {
+            val percent = (syncState as DictionarySyncStateWatcher.State.Progress).percent
+            if (percent > 1) {
+                navigateToWordsList.invoke()
+            }
         }
     }
     Scaffold(modifier = Modifier) {
@@ -48,21 +55,21 @@ fun SplashScreen(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 CircularProgressIndicator(modifier = Modifier.size(32.dp))
-                val text = when (state) {
-
-                    DictionaryState.Loading -> {
-                        "Loading..."
-                    }
-
-                    DictionaryState.ParsingItems -> {
-                        "Parsing items "
-                    }
-
-                    is DictionaryState.Loaded -> {
-                        "Loaded ${(state as DictionaryState.Loaded).wordsCount} words!"
-                    }
-                }
-                Text(text = text)
+//                val text = when (state) {
+//
+//                    DictionaryState.Loading -> {
+//                        "Loading..."
+//                    }
+//
+//                    DictionaryState.ParsingItems -> {
+//                        "Parsing items "
+//                    }
+//
+//                    is DictionaryState.Loaded -> {
+//                        "Loaded ${(state as DictionaryState.Loaded).wordsCount} words!"
+//                    }
+//                }
+//                Text(text = text)
             }
 
         }

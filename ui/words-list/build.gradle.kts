@@ -38,6 +38,8 @@ android {
 
 dependencies {
     implementation(project(":libs:domain"))
+    implementation(project(":feature:dictionary-sync"))
+
     implementation(libs.androidx.hilt.navigation.compose)
     implementation(libs.hilt.android)
     ksp(libs.hilt.android.compiler)

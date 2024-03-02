@@ -1,5 +1,9 @@
-package com.example.data
+package com.example.data.di
 
+import com.example.data.DictionaryInsert
+import com.example.data.DictionaryInsertDefault
+import com.example.data.repository.DictionaryRepositoryDefault
+import com.example.data.repository.RealDictionaryRepository
 import com.example.domain.DictionaryLoader
 import com.example.domain.DictionaryRepository
 import dagger.Binds
@@ -14,7 +18,7 @@ interface DictionaryRepositoryModule {
     fun provideDictionaryRepository(default: DictionaryRepositoryDefault): DictionaryLoader
 
     @Binds
-    fun provideSyncDictionary(default: SyncDictionaryDefault): SyncDictionary
+    fun provideSyncDictionary(default: DictionaryInsertDefault): DictionaryInsert
 
     @Binds
     fun provideDictionaryRepoReal(real: RealDictionaryRepository): DictionaryRepository

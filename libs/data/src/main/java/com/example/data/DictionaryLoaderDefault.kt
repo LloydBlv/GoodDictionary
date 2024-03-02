@@ -1,6 +1,8 @@
 package com.example.data
 
 import android.content.Context
+import com.example.data.database.WordEntity
+import com.example.data.database.WordsDao
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
 import java.io.BufferedReader

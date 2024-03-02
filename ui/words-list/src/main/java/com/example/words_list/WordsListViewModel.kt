@@ -6,13 +6,18 @@ import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import androidx.paging.insertSeparators
 import androidx.paging.map
+import com.example.dictionary_sync.DictionarySyncStateWatcher
 import com.example.domain.DictionaryWord
 import com.example.domain.usecases.GetFilteredWordsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import java.util.UUID
 import javax.inject.Inject
@@ -36,32 +41,29 @@ sealed interface PagingUiItem {
     }
 }
 
-sealed interface UiState {
-    object Failure : UiState
-
-    sealed interface LoadingDictionary : UiState {
-        data object Loading : LoadingDictionary
-        data class Loaded(val loadTimeMs: Long) : LoadingDictionary
-        data class Failed(val loadTimeMs: Long) : LoadingDictionary
-    }
-
-    data class PagingState(val data: PagingData<PagingUiItem>) : UiState
-
-}
-
 @HiltViewModel
 class WordsListViewModel @Inject constructor(
     private val getFilteredWordUseCase: GetFilteredWordsUseCase,
+    stateWatcher: DictionarySyncStateWatcher
 ) : ViewModel() {
 
-    val query = MutableStateFlow("")
-    val items2 = query
+    val state: StateFlow<DictionarySyncStateWatcher.State> = stateWatcher.watch()
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5_000),
+            initialValue = DictionarySyncStateWatcher.State.Loading
+        )
+    private val _query = MutableStateFlow("")
+    val query: StateFlow<String>
+        get() = _query.asStateFlow()
+
+    val pagingDataFlow = query
         .debounce(300)
         .flatMapLatest { query ->
             getFilteredWordUseCase.invoke(query)
                 .map(::createPagingData)
                 .cachedIn(viewModelScope)
-        }
+        }.debounce(500)
 
     private fun createPagingData(pagingData: PagingData<DictionaryWord>) =
         pagingData.map { PagingUiItem.WordItem(it.word, it.id) }
@@ -84,7 +86,7 @@ class WordsListViewModel @Inject constructor(
             }
 
     fun onQueryChanged(query: String) {
-        this@WordsListViewModel.query.update { query }
+        this@WordsListViewModel._query.update { query }
     }
 
 

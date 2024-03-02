@@ -6,6 +6,8 @@ import androidx.test.platform.app.InstrumentationRegistry
 import assertk.assertThat
 import assertk.assertions.isEqualTo
 import assertk.assertions.isTrue
+import com.example.data.database.AppDatabase
+import com.example.data.database.WordsDao
 import kotlinx.coroutines.test.runTest
 import org.junit.After
 import org.junit.Before
@@ -16,7 +18,7 @@ import org.robolectric.RobolectricTestRunner
 import java.util.concurrent.TimeUnit
 
 @RunWith(RobolectricTestRunner::class)
-class SyncDictionaryDefaultTest {
+class DictionaryInsertDefaultTest {
     private lateinit var database: AppDatabase
     private lateinit var dao: WordsDao
 
@@ -43,7 +45,7 @@ class SyncDictionaryDefaultTest {
 
     @Test
     fun test() = runTest {
-        val sync = SyncDictionaryDefault(database, chunkSize = 1000)
+        val sync = DictionaryInsertDefault(database, chunkSize = 1000)
         val wordsSequence = createWordsSequence()
         sync.insertUsingSqlite(wordsSequence)
         assertThat(dao.getAllWords().size).isEqualTo(370150)

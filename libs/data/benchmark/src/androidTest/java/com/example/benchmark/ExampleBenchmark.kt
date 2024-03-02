@@ -6,15 +6,12 @@ import android.database.sqlite.SQLiteDatabase.CONFLICT_REPLACE
 import androidx.benchmark.junit4.BenchmarkRule
 import androidx.benchmark.junit4.measureRepeated
 import androidx.room.Room
-import androidx.room.RoomDatabase
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.example.data.AppDatabase
-import com.example.data.DictionaryLoaderDefault
-import com.example.data.SyncDictionaryDefault
-import com.example.data.WordEntity
-import com.example.data.WordsDao
-import kotlinx.coroutines.Dispatchers
+import com.example.data.database.AppDatabase
+import com.example.data.DictionaryInsertDefault
+import com.example.data.database.WordEntity
+import com.example.data.database.WordsDao
 import kotlinx.coroutines.runBlocking
 import org.junit.After
 import org.junit.Before
@@ -69,7 +66,7 @@ class ExampleBenchmark {
     fun memoryDb_Dao_no_chunk() {
         benchmarkRule.measureRepeated {
             val database = runWithTimingDisabled { createInMemoryDb() }
-            val syncDictionary = SyncDictionaryDefault(database)
+            val syncDictionary = DictionaryInsertDefault(database)
             syncDictionary.insertUsingDao(createWordsSequence())
         }
     }
@@ -77,7 +74,7 @@ class ExampleBenchmark {
     fun diskDb_Dao_no_chunk() {
         benchmarkRule.measureRepeated {
             val database = runWithTimingDisabled { createDiskDb() }
-            val syncDictionary = SyncDictionaryDefault(database)
+            val syncDictionary = DictionaryInsertDefault(database)
             syncDictionary.insertUsingDao(createWordsSequence())
         }
     }
@@ -85,7 +82,7 @@ class ExampleBenchmark {
     fun memoryDb_sqlite_no_chunk() {
         benchmarkRule.measureRepeated {
             val database = runWithTimingDisabled { createInMemoryDb() }
-            val syncDictionary = SyncDictionaryDefault(database)
+            val syncDictionary = DictionaryInsertDefault(database)
             syncDictionary.insertUsingSqlite(createWordsSequence())
         }
     }
@@ -93,7 +90,7 @@ class ExampleBenchmark {
     fun memoryDb_sqlite_1000_chunk() {
         benchmarkRule.measureRepeated {
             val database = runWithTimingDisabled { createInMemoryDb() }
-            val syncDictionary = SyncDictionaryDefault(database, chunkSize = 1000)
+            val syncDictionary = DictionaryInsertDefault(database, chunkSize = 1000)
             syncDictionary.insertUsingSqlite(createWordsSequence())
         }
     }
@@ -101,7 +98,7 @@ class ExampleBenchmark {
     fun memoryDb_sqlite_10_000_chunk() {
         benchmarkRule.measureRepeated {
             val database = runWithTimingDisabled { createInMemoryDb() }
-            val syncDictionary = SyncDictionaryDefault(database, chunkSize = 10_000)
+            val syncDictionary = DictionaryInsertDefault(database, chunkSize = 10_000)
             syncDictionary.insertUsingSqlite(createWordsSequence())
         }
     }
@@ -109,7 +106,7 @@ class ExampleBenchmark {
     fun diskDb_sqlite_no_chunk() {
         benchmarkRule.measureRepeated {
             val database = runWithTimingDisabled { createInMemoryDb() }
-            val syncDictionary = SyncDictionaryDefault(database)
+            val syncDictionary = DictionaryInsertDefault(database)
             syncDictionary.insertUsingSqlite(createWordsSequence())
         }
     }

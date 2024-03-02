@@ -60,12 +60,20 @@ dependencies {
     implementation(project(":ui:words-list"))
     implementation(project(":ui:word-details"))
     implementation(project(":ui:splash"))
+    implementation(project(":feature:dictionary-sync"))
+    implementation("androidx.work:work-runtime-ktx:2.9.0")
+    implementation("androidx.hilt:hilt-work:1.2.0")
+
     runtimeOnly(project(":libs:data"))
     implementation(libs.androidx.core.splashscreen)
     implementation(libs.androidx.hilt.navigation.compose)
     implementation(libs.androidx.navigation.compose)
     implementation(libs.hilt.android)
+
     ksp(libs.hilt.android.compiler)
+    ksp(libs.androidx.hilt.hilt.compiler)
+    ksp(libs.dagger.hilt.compiler)
+
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)

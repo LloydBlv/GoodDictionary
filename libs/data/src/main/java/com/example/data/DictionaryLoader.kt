@@ -1,6 +1,7 @@
 package com.example.data
 
 import android.content.Context
+import com.example.data.database.WordsDao
 import java.io.BufferedReader
 
 interface DictionaryLoader {

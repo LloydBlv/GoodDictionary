@@ -4,8 +4,8 @@ import androidx.benchmark.junit4.BenchmarkRule
 import androidx.benchmark.junit4.measureRepeated
 import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
-import com.example.data.AppDatabase
-import com.example.data.SyncDictionaryDefault
+import com.example.data.database.AppDatabase
+import com.example.data.DictionaryInsertDefault
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -48,7 +48,7 @@ class BenchmarkDatabaseSync(
     fun benchmarkWordsInsertion() {
         benchmarkRule.measureRepeated {
             val database = runWithTimingDisabled { createDb() }
-            val syncDictionary = SyncDictionaryDefault(database, chunkSize)
+            val syncDictionary = DictionaryInsertDefault(database, chunkSize)
             when (insertMethod) {
                 InsertMethod.DAO -> syncDictionary.insertUsingDao(createWordsSequence())
                 InsertMethod.SQLITE -> syncDictionary.insertUsingSqlite(createWordsSequence())

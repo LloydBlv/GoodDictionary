@@ -3,43 +3,49 @@
 package com.example.words_list
 
 import android.annotation.SuppressLint
-import androidx.compose.foundation.clickable
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyItemScope
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DockedSearchBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.LoadState
-import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
-import androidx.paging.compose.itemContentType
+import com.example.dictionary_sync.DictionarySyncStateWatcher
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
@@ -47,7 +53,12 @@ fun WordsListScreen(
     modifier: Modifier = Modifier,
     navigateToDetails: (id: Long) -> Unit
 ) {
+
+    val snackbarHostState = remember { SnackbarHostState() }
+
+
     Scaffold(
+        snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
         modifier = Modifier.fillMaxSize(),
         content = {
             WordsScreenContent(
@@ -57,14 +68,77 @@ fun WordsListScreen(
         }
     )
 
+
 }
 
 @Composable
 private fun WordsScreenContent(modifier: Modifier, navigateToDetails: (id: Long) -> Unit) {
     Column(modifier = modifier) {
         SearchBarUi()
-        WordsListUi(navigateToDetails = navigateToDetails)
+        WordsListUi(
+            navigateToDetails = navigateToDetails,
+            modifier = Modifier.weight(1.0f)
+        )
+        SyncStateUi()
     }
+}
+
+@Composable
+fun SyncStateUi() {
+    val viewModel = hiltViewModel<WordsListViewModel>()
+    val syncState: DictionarySyncStateWatcher.State by viewModel.state.collectAsState()
+    var isVisible by remember { mutableStateOf(false) }
+    AnimatedVisibility(
+        enter = fadeIn(animationSpec = tween(300)) +
+                slideInVertically(
+                    // Slide in from 50 pixels above the baseline
+                    initialOffsetY = { -50 },
+                    animationSpec = tween(300)
+                ),
+        exit = fadeOut(animationSpec = tween(300)) +
+                slideOutVertically(
+                    // Slide out to 50 pixels below the baseline
+                    targetOffsetY = { 50 },
+                    animationSpec = tween(300)
+                ),
+        visible = syncState is DictionarySyncStateWatcher.State.Progress
+    ) {
+        var message by remember {
+            mutableStateOf("")
+        }
+        var progress by remember {
+            mutableFloatStateOf(0.0f)
+        }
+        Column(
+            verticalArrangement = Arrangement.SpaceAround,
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(56.dp)
+        ) {
+            LinearProgressIndicator(
+                progress = { progress },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(2.dp),
+            )
+            Text(text = message, modifier = Modifier)
+        }
+        LaunchedEffect(key1 = syncState) {
+            if (syncState is DictionarySyncStateWatcher.State.Progress) {
+                val percent =
+                    (syncState as DictionarySyncStateWatcher.State.Progress).percent
+
+                progress = percent / 100.0f
+                if (percent == 100) {
+                    message = "Dictionary synced success!"
+                } else {
+                    message = "Syncing... $percent%"
+                }
+            }
+        }
+    }
+
 }
 
 @Composable
@@ -103,11 +177,11 @@ private fun ColumnScope.WordsListUi(
     navigateToDetails: (id: Long) -> Unit
 ) {
     val viewModel = hiltViewModel<WordsListViewModel>()
-    val lazyPagingItems = viewModel.items2.collectAsLazyPagingItems()
+    val lazyPagingItems = viewModel.pagingDataFlow.collectAsLazyPagingItems()
 
     val count = lazyPagingItems.itemCount
     Box(
-        modifier = modifier.fillMaxSize(),
+        modifier = modifier,
         contentAlignment = Alignment.Center
     ) {
         when {
@@ -123,73 +197,15 @@ private fun ColumnScope.WordsListUi(
                 Text(text = "No results found")
             }
 
-            lazyPagingItems.loadState.refresh is LoadState.NotLoading -> {
-                WordsList(
-                    modifier = modifier,
-                    count = count,
-                    lazyPagingItems = lazyPagingItems,
-                    navigateToDetails = navigateToDetails
-                )
-            }
         }
-    }
-}
-
-
-@Composable
-private fun WordsList(
-    modifier: Modifier,
-    count: Int,
-    lazyPagingItems: LazyPagingItems<PagingUiItem>,
-    navigateToDetails: (id: Long) -> Unit
-) {
-    LazyColumn(
-        modifier = modifier.fillMaxSize(),
-        contentPadding = PaddingValues(8.dp),
-        verticalArrangement = Arrangement.spacedBy(4.dp),
-    ) {
-        items(
+        WordsList(
+            modifier = modifier,
             count = count,
-            contentType = { lazyPagingItems.itemContentType { it is PagingUiItem.Header } }
-        ) { index ->
-            when (val item = lazyPagingItems[index]) {
-                is PagingUiItem.Header -> HeaderComposable(item)
-                is PagingUiItem.WordItem -> WordItemComposable(item, navigateToDetails)
-                else -> {}
-            }
-        }
+            lazyPagingItems = lazyPagingItems,
+            navigateToDetails = navigateToDetails
+        )
+
     }
 }
 
-@Composable
-fun LazyItemScope.HeaderComposable(header: PagingUiItem.Header) {
-    Text(
-        text = "${header.letter}",
-        style = MaterialTheme.typography.headlineLarge.copy(fontSize = 48.sp)
-    )
-}
 
-@Composable
-fun LazyItemScope.WordItemComposable(
-    wordItem: PagingUiItem.WordItem,
-    navigateToDetails: (id: Long) -> Unit
-) {
-    androidx.compose.material3.ListItem(
-        modifier = Modifier.clickable { navigateToDetails.invoke(wordItem.id) },
-        headlineContent = {
-            Text(
-                text = wordItem.word,
-                style = MaterialTheme.typography.bodyLarge.copy(fontSize = 12.sp)
-            )
-        },
-        trailingContent = {
-            IconButton(onClick = { navigateToDetails.invoke(wordItem.id) }, content = {
-                Icon(
-                    imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
-                    contentDescription = stringResource(id = R.string.show_word_details)
-                )
-            })
-        }
-    )
-
-}
