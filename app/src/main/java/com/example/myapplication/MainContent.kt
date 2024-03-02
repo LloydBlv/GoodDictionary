@@ -11,6 +11,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import androidx.navigation.navOptions
+import com.example.splash.SplashScreen
 import com.example.words_list.WordsListScreen
 
 
@@ -57,7 +58,7 @@ internal fun MainContent() {
                 })
             ) {
                 val id = it.arguments?.getLong("wordId")!!
-                WordDetailScreen(
+                com.example.word_details.WordDetailScreen(
                     modifier = Modifier.fillMaxSize(),
                     id = id,
                     onWordDeleted = navController::navigateUp,

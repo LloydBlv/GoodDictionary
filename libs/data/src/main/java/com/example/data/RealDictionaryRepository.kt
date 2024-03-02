@@ -1,5 +1,9 @@
 package com.example.data
 
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
+import androidx.paging.map
 import com.example.domain.DictionaryRepository
 import com.example.domain.DictionaryWord
 import kotlinx.coroutines.flow.Flow
@@ -23,5 +27,15 @@ class RealDictionaryRepository @Inject constructor(
                     id = entity.rowid
                 )
             }
+    }
+
+    override fun getFilteredWords(query: String): Flow<PagingData<DictionaryWord>> {
+        return Pager(
+            config = PagingConfig(pageSize = 100),
+            initialKey = null,
+            pagingSourceFactory = { dao.filtered1("%$query%") }
+        ).flow.map {
+            it.map { entity -> DictionaryWord(word = entity.word, id = entity.rowid) }
+        }
     }
 }

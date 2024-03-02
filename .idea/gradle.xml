@@ -10,14 +10,13 @@
           <set>
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/app" />
-            <option value="$PROJECT_DIR$/common" />
-            <option value="$PROJECT_DIR$/common/compose" />
-            <option value="$PROJECT_DIR$/common/ui-compose" />
             <option value="$PROJECT_DIR$/libs" />
             <option value="$PROJECT_DIR$/libs/data" />
             <option value="$PROJECT_DIR$/libs/data/benchmark" />
             <option value="$PROJECT_DIR$/libs/domain" />
             <option value="$PROJECT_DIR$/ui" />
+            <option value="$PROJECT_DIR$/ui/splash" />
+            <option value="$PROJECT_DIR$/ui/word-details" />
             <option value="$PROJECT_DIR$/ui/words-list" />
           </set>
         </option>

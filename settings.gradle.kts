@@ -19,11 +19,7 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "My Application"
+rootProject.name = "Good Dictionary"
 include(":app")
-include(":libs:data")
-include(":libs:domain")
-include(":libs:data:benchmark")
-include(":ui:words-list")
-include(":common:compose")
-include(":common:ui-compose")
+include(":libs:data", ":libs:domain", ":libs:data:benchmark")
+include(":ui:words-list", ":ui:splash", ":ui:word-details")

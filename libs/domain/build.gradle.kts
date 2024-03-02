@@ -11,4 +11,5 @@ java {
 dependencies {
     implementation(libs.kotlinx.coroutines.jvm)
     implementation(libs.javax.inject)
+    implementation("androidx.paging:paging-common:3.2.1")
 }

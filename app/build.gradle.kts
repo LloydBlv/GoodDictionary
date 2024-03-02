@@ -58,7 +58,9 @@ android {
 
 dependencies {
     implementation(project(":ui:words-list"))
-    implementation(project(":libs:domain"))
+    implementation(project(":ui:word-details"))
+    implementation(project(":ui:splash"))
+    runtimeOnly(project(":libs:data"))
     implementation(libs.androidx.core.splashscreen)
     implementation(libs.androidx.hilt.navigation.compose)
     implementation(libs.androidx.navigation.compose)
