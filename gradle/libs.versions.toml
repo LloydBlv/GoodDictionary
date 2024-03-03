@@ -24,6 +24,7 @@ jetbrainsKotlinJvm = "1.9.22"
 benchmark = "1.2.3"
 mockk = "1.13.10"
 navigationCompose = "2.7.7"
+pagingCommon = "3.2.1"
 robolectric = "4.11.1"
 roomRuntime = "2.6.1"
 runner = "1.5.2"
@@ -36,7 +37,7 @@ pagingTesting = "3.2.1"
 workRuntimeKtx = "2.9.0"
 spotless = "6.25.0"
 ktlint = "1.0.1"
-
+ksp = "1.9.22-1.0.17"
 
 
 [libraries]
@@ -48,6 +49,7 @@ androidx-hilt-hilt-compiler = { module = "androidx.hilt:hilt-compiler", version.
 androidx-hilt-navigation-compose = { module = "androidx.hilt:hilt-navigation-compose", version.ref = "hiltNavigationCompose" }
 androidx-hilt-work = { module = "androidx.hilt:hilt-work", version.ref = "hiltNavigationCompose" }
 androidx-navigation-compose = { module = "androidx.navigation:navigation-compose", version.ref = "navigationCompose" }
+androidx-paging-common = { module = "androidx.paging:paging-common", version.ref = "pagingCommon" }
 androidx-room-compiler = { module = "androidx.room:room-compiler", version.ref = "roomRuntime" }
 androidx-room-paging = { module = "androidx.room:room-paging", version.ref = "roomRuntime" }
 androidx-room-runtime = { module = "androidx.room:room-runtime", version.ref = "roomRuntime" }
@@ -103,3 +105,5 @@ android-library = { id = "com.android.library", version.ref = "agp" }
 jetbrains-kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "jetbrainsKotlinJvm" }
 benchmark = { id = "androidx.benchmark", version.ref = "benchmark" }
 spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }
+ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
+hilt = { id = "com.google.dagger.hilt.android", version.ref = "hiltAndroid" }
