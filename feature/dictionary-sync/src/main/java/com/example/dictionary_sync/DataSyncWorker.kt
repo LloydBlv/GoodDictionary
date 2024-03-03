@@ -10,9 +10,11 @@ import android.os.Build
 import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.hilt.work.HiltWorker
+import androidx.work.Constraints
 import androidx.work.CoroutineWorker
 import androidx.work.ExistingWorkPolicy
 import androidx.work.ForegroundInfo
+import androidx.work.NetworkType
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.OutOfQuotaPolicy
 import androidx.work.WorkManager
@@ -44,12 +46,13 @@ class DataSyncWorker @AssistedInject constructor(
     companion object {
         private const val NOTIFICATION_CHANNEL_ID = "11"
         private const val NOTIFICATION_CHANNEL_NAME = "Work Service"
-        val ID = UUID.nameUUIDFromBytes("sync-worker".toByteArray())
+        val ID: UUID = UUID.nameUUIDFromBytes("sync-worker".toByteArray())
         const val FAILURE_MESSAGE_DATA = "failure_message_data"
         fun initWorker(context: Context) {
             Log.e("worker","initWorker")
             val request = OneTimeWorkRequestBuilder<DataSyncWorker>()
                 .setId(ID)
+                .setConstraints(Constraints(requiredNetworkType = NetworkType.CONNECTED))
                 .setExpedited(OutOfQuotaPolicy.RUN_AS_NON_EXPEDITED_WORK_REQUEST)
                 .build()
             WorkManager.getInstance(context)
@@ -65,6 +68,7 @@ class DataSyncWorker @AssistedInject constructor(
     override suspend fun doWork(): Result {
         try {
             Log.e("worker", "going to start")
+
 
             if (syncResultManager.isFinished()) {
                 Log.e("worker", "already finished")
@@ -85,7 +89,11 @@ class DataSyncWorker @AssistedInject constructor(
             syncResultManager.markSyncSuccess()
         } catch (ex: Exception) {
             Log.e("worker", ex.toString())
-            return Result.failure(workDataOf(FAILURE_MESSAGE_DATA to ex.localizedMessage))
+            return if (runAttemptCount > 3) {
+                Result.failure(workDataOf(FAILURE_MESSAGE_DATA to ex.localizedMessage))
+            } else {
+                Result.retry()
+            }
         }
         return Result.success()
     }
