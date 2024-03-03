@@ -17,7 +17,7 @@ android {
     }
 
     defaultConfig {
-        minSdk = 24
+        minSdk = 21
         targetSdk = 34
 
         testInstrumentationRunner = "androidx.benchmark.junit4.AndroidBenchmarkRunner"

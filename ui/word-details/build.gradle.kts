@@ -1,21 +1,11 @@
 plugins {
-    alias(libs.plugins.android.library)
-    alias(libs.plugins.jetbrains.kotlin.android)
-    id("com.google.devtools.ksp")
-
+    id("com.gooddictionary.kotlin.android")
+    id("com.gooddictionary.android.library")
+    id("com.gooddictionary.hilt")
 }
 
 android {
     namespace = "com.example.word_details"
-    compileSdk = 34
-
-    defaultConfig {
-        minSdk = 24
-
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-        consumerProguardFiles("consumer-rules.pro")
-    }
-
     buildTypes {
         release {
             isMinifyEnabled = false
@@ -25,23 +15,14 @@ android {
             )
         }
     }
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
-    }
-    kotlinOptions {
-        jvmTarget = JavaVersion.VERSION_17.toString()
-    }
     buildFeatures.compose = true
     composeOptions { kotlinCompilerExtensionVersion = "1.5.9" }
 }
 
 dependencies {
-    implementation(project(":libs:domain"))
+    implementation(projects.libs.domain)
     implementation(libs.androidx.material3)
     implementation(libs.androidx.hilt.navigation.compose)
-    implementation(libs.hilt.android)
-    ksp(libs.hilt.android.compiler)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)

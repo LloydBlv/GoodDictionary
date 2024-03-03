@@ -1,20 +1,11 @@
 plugins {
-    alias(libs.plugins.android.library)
-    alias(libs.plugins.jetbrains.kotlin.android)
-    id("com.google.dagger.hilt.android")
-    id("com.google.devtools.ksp")
+    id("com.gooddictionary.kotlin.android")
+    id("com.gooddictionary.android.library")
+    id("com.gooddictionary.hilt")
 }
 
 android {
     namespace = "com.example.data"
-    compileSdk = 34
-
-    defaultConfig {
-        minSdk = 24
-
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-        consumerProguardFiles("consumer-rules.pro")
-    }
 
     buildTypes {
         release {
@@ -25,36 +16,28 @@ android {
             )
         }
     }
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
-    }
-    kotlinOptions {
-        jvmTarget = JavaVersion.VERSION_17.toString()
-    }
 }
 
 dependencies {
 
-    implementation(project(":libs:domain"))
+    implementation(projects.libs.domain)
     implementation(libs.androidx.room.runtime)
     implementation(libs.androidx.room.ktx)
     implementation(libs.androidx.paging.common.ktx)
 
-    implementation(libs.hilt.android)
-    ksp(libs.hilt.android.compiler)
     ksp(libs.androidx.hilt.hilt.compiler)
     ksp(libs.dagger.hilt.compiler)
-
     ksp(libs.androidx.room.compiler)
+
     implementation(libs.androidx.room.paging)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
+    implementation(libs.timber)
+
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
 
-    implementation(libs.timber)
     testImplementation(libs.androidx.paging.testing)
     testImplementation(libs.turbine)
     testImplementation(libs.androidx.runner)

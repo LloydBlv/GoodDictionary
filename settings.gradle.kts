@@ -1,4 +1,5 @@
 pluginManagement {
+    includeBuild("gradle/build-logic")
     repositories {
         google {
             content {
@@ -18,8 +19,9 @@ dependencyResolutionManagement {
         mavenCentral()
     }
 }
+enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 
-rootProject.name = "Good Dictionary"
+rootProject.name = "GoodDictionary"
 include(":app")
 include(":libs:data", ":libs:domain", ":libs:data:benchmark")
 include(":ui:words-list", ":ui:splash", ":ui:word-details")

@@ -1,6 +1,6 @@
 plugins {
-    alias(libs.plugins.android.library)
-    alias(libs.plugins.jetbrains.kotlin.android)
+    id("com.gooddictionary.kotlin.android")
+    id("com.gooddictionary.android.library")
 }
 
 android {
@@ -8,7 +8,7 @@ android {
     compileSdk = 34
 
     defaultConfig {
-        minSdk = 24
+        minSdk = 21
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
@@ -31,8 +31,8 @@ android {
 }
 
 dependencies {
-    implementation(project(":feature:dictionary-sync"))
-    implementation(project(":libs:domain"))
+    implementation(projects.feature.dictionarySync)
+    implementation(projects.libs.domain)
     implementation(libs.androidx.work.runtime.ktx)
     implementation(libs.timber)
     implementation(libs.androidx.paging.common.ktx)
