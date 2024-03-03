@@ -14,7 +14,7 @@ class DictionaryInsertDefault @Inject constructor(
     private val database: AppDatabase,
 ) : DictionaryInsert {
 
-    val chunkSize: Int? = null
+    var chunkSize: Int? = null
 
     override fun insertUsingSqlite(words: Sequence<String>) {
         val db = database.openHelper.writableDatabase
@@ -54,9 +54,11 @@ class DictionaryInsertDefault @Inject constructor(
     }
 
     var rowId = 0L
-    private fun insertUsingBindings(items: List<String>,
-                                    sequence: Long,
-                                    db: SupportSQLiteDatabase) {
+    private fun insertUsingBindings(
+        items: List<String>,
+        sequence: Long,
+        db: SupportSQLiteDatabase
+    ) {
         val sql = "INSERT INTO words VALUES(?, ?, ?)"
         val statement = db.compileStatement(sql)
         db.beginTransaction()
@@ -70,12 +72,13 @@ class DictionaryInsertDefault @Inject constructor(
                 rowId++
             }
             db.setTransactionSuccessful()
-        }catch (sqlConstraint: SQLiteConstraintException){
+        } catch (sqlConstraint: SQLiteConstraintException) {
             Log.e("duplicated", "with id=${sqlConstraint}")
         } finally {
             db.endTransaction()
         }
     }
+
     private fun insertUsingSqlite(
         db: SupportSQLiteDatabase,
         values: ContentValues
@@ -98,5 +101,5 @@ class DictionaryInsertDefault @Inject constructor(
         database.wordDao().insert(it.map { WordEntity(word = it, sequence = sequence) })
     }
 
-    private fun hasValidChunk(): Boolean = chunkSize != null && chunkSize > 0
+    private fun hasValidChunk(): Boolean = chunkSize?.let { it > 0 } == true
 }

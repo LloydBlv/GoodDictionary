@@ -44,8 +44,10 @@ class DictionaryInsertDefaultTest {
     }
 
     @Test
-    fun test() = runTest {
-        val sync = DictionaryInsertDefault(database, chunkSize = 1000)
+    fun testWordsAreInsertedCorrectly() = runTest {
+        val sync = DictionaryInsertDefault(database).apply {
+             chunkSize = 1000
+        }
         val wordsSequence = createWordsSequence()
         sync.insertUsingSqlite(wordsSequence)
         assertThat(dao.getAllWords().size).isEqualTo(370150)
