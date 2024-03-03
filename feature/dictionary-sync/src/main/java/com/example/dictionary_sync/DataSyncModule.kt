@@ -14,4 +14,7 @@ interface DataSyncModule {
 
     @Binds
     fun bindStateWatcher(watcherDefault: DictionarySyncStateWatcherDefault): DictionarySyncStateWatcher
+
+    @Binds
+    fun bindSyncStatus(status: DataSyncWorkerStatusDefault): DataSyncWorkerStatus
 }

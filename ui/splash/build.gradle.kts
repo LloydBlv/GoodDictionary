@@ -32,13 +32,19 @@ android {
     kotlinOptions {
         jvmTarget = JavaVersion.VERSION_17.toString()
     }
+    testOptions.unitTests.isReturnDefaultValues = true
     buildFeatures.compose = true
     composeOptions { kotlinCompilerExtensionVersion = "1.5.9" }
 }
 
 dependencies {
     implementation("androidx.work:work-runtime-ktx:2.9.0")
+
     implementation(project(":feature:dictionary-sync"))
+
+    testImplementation(libs.kotlinx.coroutines.test)
+    testImplementation(libs.turbine)
+    testImplementation(libs.assertk)
 
     implementation(project(":libs:domain"))
     implementation(libs.androidx.material3)
