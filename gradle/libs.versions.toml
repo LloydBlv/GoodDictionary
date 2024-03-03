@@ -21,6 +21,7 @@ material = "1.11.0"
 material3 = "1.2.0"
 jetbrainsKotlinJvm = "1.9.22"
 benchmark = "1.2.3"
+mockk = "1.13.10"
 navigationCompose = "2.7.7"
 robolectric = "4.11.1"
 roomRuntime = "2.6.1"
@@ -28,6 +29,7 @@ runner = "1.5.2"
 benchmarkJunit4 = "1.2.3"
 roomKtx = "2.6.1"
 circuit = "0.19.1"
+timber = "5.0.1"
 turbine = "1.0.0"
 pagingCommonKtx = "3.2.1"
 pagingTesting = "3.2.1"
@@ -81,7 +83,9 @@ circuit-foundation = { module = "com.slack.circuit:circuit-foundation", version.
 #circuit-retained = { module = "com.slack.circuit:circuit-retained", version.ref = "circuit" }
 #circuit-runtime = { module = "com.slack.circuit:circuit-runtime", version.ref = "circuit" }
 circuit-test = { module = "com.slack.circuit:circuit-test", version.ref = "circuit" }
+mockk = { module = "io.mockk:mockk", version.ref = "mockk" }
 robolectric = { module = "org.robolectric:robolectric", version.ref = "robolectric" }
+timber = { module = "com.jakewharton.timber:timber", version.ref = "timber" }
 turbine = { module = "app.cash.turbine:turbine", version.ref = "turbine" }
 androidx-paging-common-ktx = { group = "androidx.paging", name = "paging-common-ktx", version.ref = "pagingCommonKtx" }
 androidx-paging-testing = { group = "androidx.paging", name = "paging-testing", version.ref = "pagingTesting" }

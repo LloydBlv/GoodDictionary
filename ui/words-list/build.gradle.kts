@@ -38,12 +38,13 @@ android {
 
 dependencies {
     implementation(project(":libs:domain"))
+    implementation(project(":libs:data"))
     implementation(project(":feature:dictionary-sync"))
 
     implementation(libs.androidx.hilt.navigation.compose)
     implementation(libs.hilt.android)
     ksp(libs.hilt.android.compiler)
-
+    implementation(libs.timber)
     implementation(libs.androidx.ui)
     implementation(libs.androidx.material3)
 
@@ -63,4 +64,6 @@ dependencies {
     androidTestImplementation(libs.androidx.espresso.core)
     testImplementation(libs.androidx.paging.testing)
     testImplementation(libs.androidx.core.testing)
+    testImplementation(project(":common:testing"))
+    testImplementation(libs.mockk)
 }

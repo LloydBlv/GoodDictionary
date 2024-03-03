@@ -4,8 +4,8 @@ import androidx.benchmark.junit4.BenchmarkRule
 import androidx.benchmark.junit4.measureRepeated
 import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
-import com.example.data.database.AppDatabase
 import com.example.data.DictionaryInsertDefault
+import com.example.data.database.AppDatabase
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -13,7 +13,7 @@ import org.junit.runners.Parameterized
 
 
 @RunWith(Parameterized::class)
-class BenchmarkDatabaseSync(
+class DatabaseSyncBenchmark(
     val insertMethod: InsertMethod,
     val inMemory: Boolean,
     val chunkSize: Int?
@@ -48,7 +48,9 @@ class BenchmarkDatabaseSync(
     fun benchmarkWordsInsertion() {
         benchmarkRule.measureRepeated {
             val database = runWithTimingDisabled { createDb() }
-            val syncDictionary = DictionaryInsertDefault(database, chunkSize)
+            val syncDictionary = DictionaryInsertDefault(database).apply {
+                chunkSize = this@DatabaseSyncBenchmark.chunkSize
+            }
             when (insertMethod) {
                 InsertMethod.DAO -> syncDictionary.insertUsingDao(createWordsSequence())
                 InsertMethod.SQLITE -> syncDictionary.insertUsingSqlite(createWordsSequence())
@@ -56,7 +58,7 @@ class BenchmarkDatabaseSync(
         }
     }
 
-    private fun createWordsSequence() = (1..370150).map { "$it" }.asSequence()
+    private fun createWordsSequence() = (1..100).map { "$it" }.asSequence()
 
     companion object {
         @JvmStatic

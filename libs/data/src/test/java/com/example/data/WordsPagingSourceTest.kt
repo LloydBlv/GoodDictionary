@@ -11,8 +11,8 @@ import assertk.assertions.hasSize
 import assertk.assertions.isEqualTo
 import assertk.assertions.isNotNull
 import assertk.assertions.isTrue
-import com.example.data.database.AppDatabase
 import com.example.data.TestData
+import com.example.data.database.AppDatabase
 import com.example.data.database.WordEntity
 import com.example.data.database.WordsDao
 import kotlinx.coroutines.test.runTest
@@ -52,7 +52,7 @@ class WordsPagingSourceTest {
     }
 
     @Test
-    fun test() = runTest {
+    fun `test all pages loads`() = runTest {
         val source = dao.allWordsPaged()
         val pager = TestPager(PagingConfig(pageSize = 1000), source)
         val result = pager.refresh()
@@ -62,7 +62,7 @@ class WordsPagingSourceTest {
     }
 
     @Test
-    fun test1() = runTest {
+    fun `test pager loads first page`() = runTest {
         val words = TestData.generateTestWords(dataSize = 5)
         dao.insertAll(words)
         assertThat(dao.getAllWords().all { it.sequence == 1L })
@@ -95,7 +95,7 @@ class WordsPagingSourceTest {
     }
 
     @Test
-    fun test2() = runTest {
+    fun `test pager loads pages consecutively`() = runTest {
         val words = TestData.generateTestWords(dataSize = 100)
         dao.insertAll(words)
         assertThat(dao.getAllWords().all { it.sequence == 1L })

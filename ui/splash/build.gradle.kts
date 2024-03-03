@@ -44,7 +44,7 @@ dependencies {
     implementation(project(":feature:dictionary-sync"))
 
     testImplementation(project(":common:testing"))
-    testImplementation("io.mockk:mockk:1.13.10")
+    testImplementation(libs.mockk)
     testImplementation(libs.robolectric)
     testImplementation(libs.kotlinx.coroutines.test)
     testImplementation(libs.turbine)

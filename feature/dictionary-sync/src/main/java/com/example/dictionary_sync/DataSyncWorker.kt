@@ -1,13 +1,11 @@
 package com.example.dictionary_sync
 
-import android.R
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.os.Build
-import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.hilt.work.HiltWorker
 import androidx.work.Constraints
@@ -25,6 +23,7 @@ import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import timber.log.Timber
 import java.io.BufferedReader
 import java.io.InputStreamReader
 import java.net.HttpURLConnection
@@ -49,7 +48,7 @@ class DataSyncWorker @AssistedInject constructor(
         val ID: UUID = UUID.nameUUIDFromBytes("sync-worker".toByteArray())
         const val FAILURE_MESSAGE_DATA = "failure_message_data"
         fun initWorker(context: Context) {
-            Log.e("worker","initWorker")
+            Timber.tag("worker").e("initWorker")
             val request = OneTimeWorkRequestBuilder<DataSyncWorker>()
                 .setId(ID)
                 .setConstraints(Constraints(requiredNetworkType = NetworkType.CONNECTED))
@@ -67,28 +66,20 @@ class DataSyncWorker @AssistedInject constructor(
 
     override suspend fun doWork(): Result {
         try {
-            Log.e("worker", "going to start")
-
-
             if (syncResultManager.isFinished()) {
-                Log.e("worker", "already finished")
-
                 setProgress(workDataOf(Progress to 100))
                 return Result.success()
             }
-            Log.e("worker", "going to start1")
-
             val timeMs = measureTimeMillis {
-//                downloadAndInsertWords(urlString = DICTIONARY_DOWNLOAD_URL)
                 downloadAndInsertWords(urlString = DICTIONARY_DOWNLOAD_URL, progressCallback = {
-                    Log.e("worker", "progress=$it")
+                    Timber.e("progress=$it")
                     setProgress(workDataOf(Progress to it))
                 })
             }
-            Log.e("worker", "took ${timeMs}ms to insert records")
+            Timber.e("took " + timeMs + "ms to insert records")
             syncResultManager.markSyncSuccess()
         } catch (ex: Exception) {
-            Log.e("worker", ex.toString())
+            Timber.e(ex.toString())
             return if (runAttemptCount > 3) {
                 Result.failure(workDataOf(FAILURE_MESSAGE_DATA to ex.localizedMessage))
             } else {
@@ -96,19 +87,6 @@ class DataSyncWorker @AssistedInject constructor(
             }
         }
         return Result.success()
-    }
-
-    private suspend fun downloadAndInsertWords(urlString: String) = withContext(Dispatchers.IO) {
-        val url = URL(urlString)
-        val connection = url.openConnection()
-        connection.connect()
-
-        val reader = BufferedReader(InputStreamReader(connection.getInputStream()))
-        reader.useLines {
-            Log.e("worker", "going to invoke recordUscae")
-            syncDictionaryRecordsUseCase.invoke(it.toList())
-//            syncDictionary.insertUsingSqlite(it)
-        }
     }
 
     private suspend fun downloadAndInsertWords(
@@ -134,24 +112,15 @@ class DataSyncWorker @AssistedInject constructor(
                     itemCount++
 
                     if (batch.size >= batchSize) {
-//                        syncDictionary.insertUsingSqlite(batch.asSequence())
                         syncDictionaryRecordsUseCase.invoke(batch)
-//                        dao.insertAll(batch)
                         batch.clear() // Clear the batch after insertion
-
-                        // Update progress callback
                         val progress =
                             (itemCount * 100 / estimatedTotalItems) // Estimate or calculate total items
                         progressCallback(progress)
                     }
                 }
-
-                // Insert any remaining items in the batch
                 if (batch.isNotEmpty()) {
-//                    syncDictionary.insertUsingSqlite(batch.asSequence())
                     syncDictionaryRecordsUseCase.invoke(batch)
-//                    dao.insertAll(batch)
-                    // Final progress update
                     progressCallback(100) // Assuming completion
                 }
             }
@@ -180,12 +149,12 @@ class DataSyncWorker @AssistedInject constructor(
                     PendingIntent.FLAG_IMMUTABLE
                 )
             )
-            .setSmallIcon(R.drawable.stat_sys_download)
+            .setSmallIcon(android.R.drawable.stat_sys_download)
             .setOngoing(true)
             .setAutoCancel(true)
             .setOnlyAlertOnce(true)
             .setPriority(NotificationCompat.PRIORITY_MIN)
-            //            .setContentTitle(context.getString(R.string.app_name))
+            .setContentTitle("Good dictionary")
             .setLocalOnly(true)
             .setVisibility(NotificationCompat.VISIBILITY_SECRET)
             .setContentText("Syncing dictionary...")

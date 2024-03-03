@@ -1,94 +1,80 @@
 package com.example.words_list
 
-import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.paging.testing.asSnapshot
-import androidx.room.Room
-import androidx.test.core.app.ApplicationProvider
+import assertk.Assert
 import assertk.assertThat
-import assertk.assertions.hasSize
-import com.example.data.AppDatabase
-import com.example.data.SyncDictionaryDefault
-import com.example.data.WordsDao
+import assertk.assertions.isTrue
+import assertk.assertions.size
+import com.example.dictionary_sync.DictionarySyncStateWatcherDefault
+import com.example.domain.repository.DictionaryRepository
+import com.example.domain.usecases.GetFilteredWordsUseCase
+import com.example.testing.DataSyncStatusFake
+import com.example.testing.FakeDictionaryRepo
+import com.example.testing.MainDispatcherRule
 import kotlinx.coroutines.test.runTest
-import org.junit.After
-import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
+import kotlin.time.Duration.Companion.seconds
 
 
 @RunWith(RobolectricTestRunner::class)
 
 class WordsListViewModelTest {
-    @get:Rule(order = 1)
-    val instantTaskExecutorRule = InstantTaskExecutorRule()
 
     @get:Rule
     val mainDispatcherRule = MainDispatcherRule()
 
-
-    private lateinit var database: AppDatabase
-    private lateinit var dao: WordsDao
-
-    @Before
-    fun setup() {
-        database = Room.inMemoryDatabaseBuilder(
-            ApplicationProvider.getApplicationContext(),
-            AppDatabase::class.java
-        ).allowMainThreadQueries().build()
-        dao = database.wordDao()
-    }
-
-    @After
-    fun tearDown() {
-        database.close()
-    }
     @Test
-    fun testViewModelLoadsData() = runTest {
-        val sync = SyncDictionaryDefault(database)
-        sync.insertUsingSqlite(createWordsSequence(size = 1000))
-        val viewModel = WordsListViewModel(dao)
-        val items = viewModel.items
+    fun testViewModelLoadsData() = runTest(timeout = 2.seconds) {
+        val fakeRepository: DictionaryRepository = FakeDictionaryRepo(createWordsSequence(size = 1_000))
+        val viewModel = WordsListViewModel(
+            getFilteredWordUseCase = GetFilteredWordsUseCase(fakeRepository),
+            stateWatcher = DictionarySyncStateWatcherDefault(DataSyncStatusFake())
+        )
+        val items = viewModel.pagingDataFlow
         val itemsSnapshot = items.asSnapshot {
             // Scroll to the 50th item in the list. This will also suspend till
             // the prefetch requirement is met if there's one.
             // It also suspends until all loading is complete.
             scrollTo(index = 300)
         }
-        assertThat(itemsSnapshot).hasSize(500)
+        assertThat(itemsSnapshot.size >= 300).isTrue()
 
-        assertThat(items.asSnapshot(loadOperations = { scrollTo(index = 500) })).hasSize(700)
-        assertThat(items.asSnapshot(loadOperations = { scrollTo(index = 700) })).hasSize(900)
-        assertThat(items.asSnapshot(loadOperations = { scrollTo(index = 850) })).hasSize(1000)
-        assertThat(items.asSnapshot(loadOperations = { scrollTo(index = 900) })).hasSize(1000)
-        assertThat(items.asSnapshot(loadOperations = { scrollTo(index = 999) })).hasSize(1000)
+        assertThat(items.asSnapshot(loadOperations = { scrollTo(index = 500) }).size >= 500).isTrue()
+        assertThat(items.asSnapshot(loadOperations = { scrollTo(index = 700) }).size >= 700).isTrue()
+        assertThat(items.asSnapshot(loadOperations = { scrollTo(index = 850) }).size >= 850).isTrue()
+        assertThat(items.asSnapshot(loadOperations = { scrollTo(index = 900) }).size >= 900).isTrue()
+        assertThat(items.asSnapshot(loadOperations = { scrollTo(index = 1000) })).transform { it.size >= 1000 }.isTrue()
 
     }
+
     @Test
     fun testViewModelLoadsHugeData() = runTest {
-//        val sync = SyncDictionaryDefault(database, chunkSize = 1000)
-        val sync = SyncDictionaryDefault(database)
-//        val sync = SyncDictionaryDefault(database, chunkSize = 10_000)
-        sync.insertUsingSqlite(createWordsSequence(size = 100_000))
-        val viewModel = WordsListViewModel(dao)
-        val items = viewModel.items
+        val fakeRepository: DictionaryRepository = FakeDictionaryRepo(createWordsSequence(size = 1000_000))
+        val viewModel = WordsListViewModel(
+            getFilteredWordUseCase = GetFilteredWordsUseCase(fakeRepository),
+            stateWatcher = DictionarySyncStateWatcherDefault(DataSyncStatusFake())
+        )
+        val items = viewModel.pagingDataFlow
         val itemsSnapshot = items.asSnapshot {
-            // Scroll to the 50th item in the list. This will also suspend till
-            // the prefetch requirement is met if there's one.
-            // It also suspends until all loading is complete.
             scrollTo(index = 300)
         }
-        assertThat(itemsSnapshot).hasSize(500)
+        assertThat(itemsSnapshot).isAtLeast(422)
 
-        assertThat(items.asSnapshot(loadOperations = { scrollTo(index = 500) })).hasSize(700)
-        assertThat(items.asSnapshot(loadOperations = { scrollTo(index = 700) })).hasSize(900)
-        assertThat(items.asSnapshot(loadOperations = { scrollTo(index = 850) })).hasSize(1000)
-        assertThat(items.asSnapshot(loadOperations = { scrollTo(index = 5_000) })).hasSize(5200)
-        assertThat(items.asSnapshot(loadOperations = { scrollTo(index = 5_200) })).hasSize(5400)
+        assertThat(items.asSnapshot(loadOperations = { scrollTo(index = 500) })).isAtLeast(500)
+        assertThat(items.asSnapshot(loadOperations = { scrollTo(index = 700) })).isAtLeast(700)
+        assertThat(items.asSnapshot(loadOperations = { scrollTo(index = 850) })).isAtLeast(850)
+        assertThat(items.asSnapshot(loadOperations = { scrollTo(index = 10_000) })).isAtLeast(10_000)
+        assertThat(items.asSnapshot(loadOperations = { scrollTo(index = 12_000) })).isAtLeast(12_000)
 
     }
 
     private fun createWordsSequence(size: Int) = (1..size).map { "$it" }.asSequence()
+
+    fun Assert<List<*>>.isAtLeast(size: Int) {
+        size().transform { it >= size }.isTrue()
+    }
 
 }

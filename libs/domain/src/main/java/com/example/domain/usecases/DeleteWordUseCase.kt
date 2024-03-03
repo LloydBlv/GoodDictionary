@@ -1,6 +1,6 @@
 package com.example.domain.usecases
 
-import com.example.domain.DictionaryRepository
+import com.example.domain.repository.DictionaryRepository
 import javax.inject.Inject
 
 class DeleteWordUseCase @Inject constructor(private val repository: DictionaryRepository) {

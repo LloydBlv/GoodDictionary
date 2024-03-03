@@ -37,7 +37,7 @@ android {
 dependencies {
     implementation(project(":libs:domain"))
     testImplementation(project(":common:testing"))
-
+    implementation(libs.timber)
     implementation("androidx.work:work-runtime-ktx:2.9.0")
     implementation("androidx.datastore:datastore-preferences:1.0.0")
     testImplementation(libs.kotlinx.coroutines.test)

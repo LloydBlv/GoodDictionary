@@ -5,7 +5,7 @@ import com.example.data.DictionaryInsertDefault
 import com.example.data.repository.DictionaryRepositoryDefault
 import com.example.data.repository.RealDictionaryRepository
 import com.example.domain.DictionaryLoader
-import com.example.domain.DictionaryRepository
+import com.example.domain.repository.DictionaryRepository
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn

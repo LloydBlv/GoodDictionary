@@ -4,7 +4,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.domain.DictionaryWord
-import com.example.domain.GetWordUseCase
+import com.example.domain.usecases.GetWordUseCase
 import com.example.domain.usecases.DeleteWordUseCase
 import com.example.domain.usecases.GetWordsCountUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel

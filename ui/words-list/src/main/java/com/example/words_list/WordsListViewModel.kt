@@ -17,10 +17,13 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
+import timber.log.Timber
 import java.util.UUID
 import javax.inject.Inject
+import kotlin.time.Duration.Companion.milliseconds
 
 
 sealed interface PagingUiItem {
@@ -48,6 +51,9 @@ class WordsListViewModel @Inject constructor(
 ) : ViewModel() {
 
     val state: StateFlow<DictionarySyncStateWatcher.State> = stateWatcher.watch()
+        .onEach {
+            Timber.d("watcherState=%s", it)
+        }
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5_000),
@@ -58,12 +64,19 @@ class WordsListViewModel @Inject constructor(
         get() = _query.asStateFlow()
 
     val pagingDataFlow = query
-        .debounce(300)
+        .debounce(300.milliseconds.inWholeMilliseconds)
+        .onEach {
+            Timber.d("query=%s", it)
+        }
         .flatMapLatest { query ->
             getFilteredWordUseCase.invoke(query)
+                .map {
+                    Timber.d("pagingData=%s", it)
+                    it
+                }
                 .map(::createPagingData)
                 .cachedIn(viewModelScope)
-        }.debounce(500)
+        }.debounce(500.milliseconds.inWholeMilliseconds)
 
     private fun createPagingData(pagingData: PagingData<DictionaryWord>) =
         pagingData.map { PagingUiItem.WordItem(it.word, it.id) }

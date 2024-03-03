@@ -32,7 +32,11 @@ android {
 
 dependencies {
     implementation(project(":feature:dictionary-sync"))
+    implementation(project(":libs:domain"))
     implementation(libs.androidx.work.runtime.ktx)
+    implementation(libs.timber)
+    implementation(libs.androidx.paging.common.ktx)
+    implementation(libs.androidx.paging.testing)
 
     implementation(libs.kotlinx.coroutines.test)
     implementation(libs.turbine)

@@ -40,6 +40,7 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
     composeOptions {
         kotlinCompilerExtensionVersion = "1.5.9"
@@ -63,6 +64,7 @@ dependencies {
     implementation(project(":feature:dictionary-sync"))
     implementation("androidx.work:work-runtime-ktx:2.9.0")
     implementation("androidx.hilt:hilt-work:1.2.0")
+    implementation(libs.timber)
 
     runtimeOnly(project(":libs:data"))
     implementation(libs.androidx.core.splashscreen)

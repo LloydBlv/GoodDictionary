@@ -50,11 +50,4 @@ interface WordsDao {
     @Query("SELECT * FROM words WHERE word LIKE :query ORDER BY rowid ASC")
     fun filtered1(query: String): PagingSource<Int, WordEntity>
 
-    @Query(
-        "SELECT snippet(wordsFts) FROM words JOIN wordsFts " +
-                "ON words.rowid == wordsFts.rowid WHERE wordsFts.word " +
-                "MATCH :search ORDER BY sequence"
-    )
-    fun filtered(search: String): PagingSource<Int, String>
-
 }

@@ -6,13 +6,13 @@ import javax.inject.Inject
 
 
 class DictionaryRepositoryDefault @Inject constructor(
-    private val syncDictionary: DictionaryInsert,
+    private val dictionaryInsert: DictionaryInsert,
 ) : DictionaryLoader {
 
 
     override suspend fun sync(records: List<String>) {
         //TODO fix me, pass list instead
-        syncDictionary.insertUsingSqlite(records.asSequence())
+        dictionaryInsert.insertUsingSqlite(records.asSequence())
     }
 
 }
