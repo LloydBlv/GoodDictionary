@@ -28,7 +28,6 @@ roomRuntime = "2.6.1"
 runner = "1.5.2"
 benchmarkJunit4 = "1.2.3"
 roomKtx = "2.6.1"
-circuit = "0.19.1"
 timber = "5.0.1"
 turbine = "1.0.0"
 pagingCommonKtx = "3.2.1"
@@ -69,7 +68,6 @@ androidx-ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-man
 androidx-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4" }
 androidx-material3 = { group = "androidx.compose.material3", name = "material3", version.ref="material3" }
 androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
-kotlinx-coroutines = { module = "org.jetbrains.kotlinx:kotlinx-coroutines", version.ref = "coroutines" }
 kotlinx-coroutines-jvm = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "coroutines" }
 kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "coroutines" }
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
@@ -77,12 +75,6 @@ androidx-runner = { group = "androidx.test", name = "runner", version.ref = "run
 androidx-benchmark-junit4 = { group = "androidx.benchmark", name = "benchmark-junit4", version.ref = "benchmarkJunit4" }
 androidx-room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "roomKtx" }
 
-circuit-foundation = { module = "com.slack.circuit:circuit-foundation", version.ref = "circuit" }
-#circuitx-gestureNavigation = { module = "com.slack.circuit:circuitx-gesture-navigation", version.ref = "circuit" }
-#circuit-overlay = { module = "com.slack.circuit:circuit-overlay", version.ref = "circuit" }
-#circuit-retained = { module = "com.slack.circuit:circuit-retained", version.ref = "circuit" }
-#circuit-runtime = { module = "com.slack.circuit:circuit-runtime", version.ref = "circuit" }
-circuit-test = { module = "com.slack.circuit:circuit-test", version.ref = "circuit" }
 mockk = { module = "io.mockk:mockk", version.ref = "mockk" }
 robolectric = { module = "org.robolectric:robolectric", version.ref = "robolectric" }
 timber = { module = "com.jakewharton.timber:timber", version.ref = "timber" }

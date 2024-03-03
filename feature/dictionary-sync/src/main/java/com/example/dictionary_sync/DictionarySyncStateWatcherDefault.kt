@@ -16,6 +16,10 @@ class DictionarySyncStateWatcherDefault @Inject constructor(
             .map(::toDictionaryState)
     }
 
+    override fun retry() {
+        statusProvider.retrySync()
+    }
+
     private fun toDictionaryState(workInfo: WorkInfo?) = when (workInfo?.state) {
         WorManagerState.ENQUEUED -> DictionaryState.Loading
         WorManagerState.RUNNING ->

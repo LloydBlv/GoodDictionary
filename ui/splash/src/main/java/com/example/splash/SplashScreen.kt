@@ -48,7 +48,7 @@ fun SplashScreen(
     Scaffold(
         snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
         modifier = Modifier,
-        content = { SplashContent(modifier.padding(it)) })
+        content = { SplashContent(modifier.padding(it), syncState) })
 
 
     LaunchedEffect(key1 = syncState) {
@@ -81,7 +81,7 @@ fun SplashScreen(
 }
 
 @Composable
-private fun SplashContent(modifier: Modifier = Modifier) {
+private fun SplashContent(modifier: Modifier = Modifier, state: SplashViewModel.UiState) {
     Box(
         modifier = modifier,
         contentAlignment = Alignment.Center
@@ -92,10 +92,12 @@ private fun SplashContent(modifier: Modifier = Modifier) {
             style = MaterialTheme.typography.displayMedium
         )
 
-        CircularProgressIndicator(
-            modifier = Modifier
-                .size(32.dp)
-                .align(Alignment.BottomCenter)
-        )
+        if (state.isLoading()) {
+            CircularProgressIndicator(
+                modifier = Modifier
+                    .size(32.dp)
+                    .align(Alignment.BottomCenter)
+            )
+        }
     }
 }

@@ -12,10 +12,10 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SplashViewModel @Inject constructor(
-    stateWatcher: DictionarySyncStateWatcher
+    private val stateWatcher: DictionarySyncStateWatcher
 ) : ViewModel() {
     fun onRetryClicked() {
-
+       stateWatcher.retry()
     }
 
     val state = stateWatcher.watch()
@@ -38,6 +38,7 @@ class SplashViewModel @Inject constructor(
 
 
     sealed interface UiState {
+        fun isLoading() = this is Loading || this is Progress
         data object Loading : UiState
         data object Loaded : UiState
         data object Blocked : UiState

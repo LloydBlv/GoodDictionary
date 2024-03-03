@@ -8,11 +8,9 @@ import android.content.Intent
 import android.os.Build
 import androidx.core.app.NotificationCompat
 import androidx.hilt.work.HiltWorker
-import androidx.work.Constraints
 import androidx.work.CoroutineWorker
 import androidx.work.ExistingWorkPolicy
 import androidx.work.ForegroundInfo
-import androidx.work.NetworkType
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.OutOfQuotaPolicy
 import androidx.work.WorkManager
@@ -28,6 +26,7 @@ import java.io.BufferedReader
 import java.io.InputStreamReader
 import java.net.HttpURLConnection
 import java.net.URL
+import java.net.UnknownHostException
 import java.util.UUID
 import kotlin.system.measureTimeMillis
 
@@ -47,11 +46,10 @@ class DataSyncWorker @AssistedInject constructor(
         private const val NOTIFICATION_CHANNEL_NAME = "Work Service"
         val ID: UUID = UUID.nameUUIDFromBytes("sync-worker".toByteArray())
         const val FAILURE_MESSAGE_DATA = "failure_message_data"
-        fun initWorker(context: Context) {
+        fun start(context: Context) {
             Timber.tag("worker").e("initWorker")
             val request = OneTimeWorkRequestBuilder<DataSyncWorker>()
                 .setId(ID)
-                .setConstraints(Constraints(requiredNetworkType = NetworkType.CONNECTED))
                 .setExpedited(OutOfQuotaPolicy.RUN_AS_NON_EXPEDITED_WORK_REQUEST)
                 .build()
             WorkManager.getInstance(context)
@@ -79,11 +77,17 @@ class DataSyncWorker @AssistedInject constructor(
             Timber.e("took " + timeMs + "ms to insert records")
             syncResultManager.markSyncSuccess()
         } catch (ex: Exception) {
-            Timber.e(ex.toString())
-            return if (runAttemptCount > 3) {
-                Result.failure(workDataOf(FAILURE_MESSAGE_DATA to ex.localizedMessage))
-            } else {
-                Result.retry()
+            Timber.e(ex, "While doWork")
+            return when {
+                ex is UnknownHostException -> {
+                    Result.failure(workDataOf(FAILURE_MESSAGE_DATA to "Please check your internet connection"))
+                }
+                runAttemptCount > 3 -> {
+                    Result.failure(workDataOf(FAILURE_MESSAGE_DATA to ex.localizedMessage))
+                }
+                else -> {
+                    Result.retry()
+                }
             }
         }
         return Result.success()

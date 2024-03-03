@@ -22,6 +22,6 @@ class GoodDictionaryApp : Application(), Configuration.Provider {
     override fun onCreate() {
         super.onCreate()
         Timber.plant(Timber.DebugTree())
-        DataSyncWorker.initWorker(this)
+        DataSyncWorker.start(this)
     }
 }

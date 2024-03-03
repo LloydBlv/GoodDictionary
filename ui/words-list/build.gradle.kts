@@ -38,7 +38,6 @@ android {
 
 dependencies {
     implementation(project(":libs:domain"))
-    implementation(project(":libs:data"))
     implementation(project(":feature:dictionary-sync"))
 
     implementation(libs.androidx.hilt.navigation.compose)
@@ -50,8 +49,6 @@ dependencies {
 
     implementation(libs.androidx.room.paging)
     implementation(libs.androidx.paging.compose)
-    api(libs.circuit.foundation)
-    api(libs.circuit.test)
     implementation(libs.core.ktx)
     testImplementation(libs.assertk)
     testImplementation(libs.kotlinx.coroutines.test)

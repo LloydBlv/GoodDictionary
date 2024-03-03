@@ -14,4 +14,5 @@ interface DictionarySyncStateWatcher {
         data class Failure(val message: String?): State
     }
     fun watch(): Flow<State>
+    fun retry()
 }

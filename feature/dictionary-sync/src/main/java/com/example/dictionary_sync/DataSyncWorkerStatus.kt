@@ -5,4 +5,5 @@ import kotlinx.coroutines.flow.Flow
 
 interface DataSyncWorkerStatus {
     fun getWorkerStatus(): Flow<WorkInfo?>
+    fun retrySync()
 }

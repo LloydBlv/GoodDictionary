@@ -81,8 +81,8 @@ fun WordDetailScreen(
 
     LaunchedEffect(Unit) {
         val result = snackbarHostState.showSnackbar(
-            "Remove word?",
-            actionLabel = "Yes,Remove!",
+            "Remove this word?",
+            actionLabel = "Yes, Remove!",
             withDismissAction = true,
             duration = SnackbarDuration.Indefinite
         )

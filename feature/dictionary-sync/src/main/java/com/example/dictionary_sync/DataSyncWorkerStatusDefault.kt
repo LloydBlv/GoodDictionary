@@ -14,4 +14,8 @@ class DataSyncWorkerStatusDefault @Inject constructor(
         return WorkManager.getInstance(context)
             .getWorkInfoByIdFlow(DataSyncWorker.ID)
     }
+
+    override fun retrySync() {
+        DataSyncWorker.start(context)
+    }
 }
