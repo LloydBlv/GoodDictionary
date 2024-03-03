@@ -33,19 +33,24 @@ android {
         jvmTarget = JavaVersion.VERSION_17.toString()
     }
     testOptions.unitTests.isReturnDefaultValues = true
+    testOptions.unitTests.isIncludeAndroidResources = true
     buildFeatures.compose = true
     composeOptions { kotlinCompilerExtensionVersion = "1.5.9" }
 }
 
 dependencies {
-    implementation("androidx.work:work-runtime-ktx:2.9.0")
+    implementation(libs.androidx.work.runtime.ktx)
 
     implementation(project(":feature:dictionary-sync"))
 
+    testImplementation(project(":common:testing"))
+    testImplementation("io.mockk:mockk:1.13.10")
+    testImplementation(libs.robolectric)
     testImplementation(libs.kotlinx.coroutines.test)
     testImplementation(libs.turbine)
     testImplementation(libs.assertk)
-
+    testImplementation(libs.androidx.ui.test.junit4)
+    debugImplementation(libs.androidx.ui.test.manifest)
     implementation(project(":libs:domain"))
     implementation(libs.androidx.material3)
     implementation(libs.androidx.hilt.navigation.compose)

@@ -1,4 +1,4 @@
-package com.example.splash
+package com.example.testing
 
 import androidx.work.Data
 import androidx.work.WorkInfo

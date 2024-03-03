@@ -8,6 +8,12 @@ java {
     targetCompatibility = JavaVersion.VERSION_17
 }
 
+tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
+    kotlinOptions {
+        jvmTarget = JavaVersion.VERSION_17.toString()
+    }
+}
+
 dependencies {
     implementation(libs.kotlinx.coroutines.jvm)
     implementation(libs.javax.inject)

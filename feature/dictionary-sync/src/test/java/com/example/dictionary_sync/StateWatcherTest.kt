@@ -1,4 +1,4 @@
-package com.example.splash
+package com.example.dictionary_sync
 
 import androidx.work.WorkInfo
 import androidx.work.workDataOf
@@ -9,9 +9,7 @@ import assertk.assertions.isEqualTo
 import assertk.assertions.isInstanceOf
 import assertk.assertions.isNull
 import assertk.assertions.prop
-import com.example.dictionary_sync.DataSyncWorker
-import com.example.dictionary_sync.DictionarySyncStateWatcherDefault
-import com.example.splash.SplashViewModel.UiState
+import com.example.dictionary_sync.DictionarySyncStateWatcher.State
 import com.example.testing.DataSyncStatusFake
 import com.example.testing.MainDispatcherRule
 import kotlinx.coroutines.test.runTest
@@ -19,63 +17,62 @@ import org.junit.Rule
 import org.junit.Test
 
 
-class SplashViewModelTest {
+class StateWatcherTest {
 
     @get:Rule
     val mainDispatcherRule = MainDispatcherRule()
 
     @Test
-    fun `test splash state updates according to data sync watcher`() = runTest {
+    fun testWatcherState() = runTest {
         val statusProviderFake = DataSyncStatusFake()
 
         val stateWatcher = DictionarySyncStateWatcherDefault(
             statusProvider = statusProviderFake
         )
-        val viewModel = SplashViewModel(stateWatcher = stateWatcher)
 
-        viewModel.state.test {
-            assertThat(awaitItem()).isInstanceOf(UiState.Unknown::class)
+        stateWatcher.watch().test {
+            assertThat(awaitItem()).isInstanceOf(State.Unknown::class)
 
             statusProviderFake.emit(WorkInfo.State.BLOCKED)
-            assertThat(awaitItem()).isInstanceOf(UiState.Blocked::class)
+            assertThat(awaitItem()).isInstanceOf(State.Blocked::class)
 
             statusProviderFake.emit(WorkInfo.State.CANCELLED)
-            assertThat(awaitItem()).isInstanceOf(UiState.Cancelled::class)
+            assertThat(awaitItem()).isInstanceOf(State.Cancelled::class)
 
 
             statusProviderFake.emit(WorkInfo.State.ENQUEUED)
-            assertThat(awaitItem()).isInstanceOf(UiState.Loading::class)
+            assertThat(awaitItem()).isInstanceOf(State.Loading::class)
 
             statusProviderFake.emit(WorkInfo.State.RUNNING)
             assertThat(awaitItem()).all {
-                isInstanceOf(UiState.Progress::class)
-                transform { it as UiState.Progress }.prop(UiState.Progress::percent).isEqualTo(0)
+                isInstanceOf(State.Progress::class)
+                transform { it as State.Progress }.prop(State.Progress::percent).isEqualTo(0)
             }
 
             statusProviderFake.emit(WorkInfo.State.RUNNING, progress = 50)
             assertThat(awaitItem()).all {
-                isInstanceOf(UiState.Progress::class)
-                transform { it as UiState.Progress }.prop(UiState.Progress::percent).isEqualTo(50)
+                isInstanceOf(State.Progress::class)
+                transform { it as State.Progress }.prop(State.Progress::percent).isEqualTo(50)
             }
 
             statusProviderFake.emit(WorkInfo.State.RUNNING, progress = 99)
             assertThat(awaitItem()).all {
-                isInstanceOf(UiState.Progress::class)
-                transform { it as UiState.Progress }.prop(UiState.Progress::percent).isEqualTo(99)
+                isInstanceOf(State.Progress::class)
+                transform { it as State.Progress }.prop(State.Progress::percent).isEqualTo(99)
             }
 
             statusProviderFake.emit(WorkInfo.State.FAILED)
             assertThat(awaitItem()).all {
-                isInstanceOf(UiState.Failure::class)
-                transform { it as UiState.Failure }.prop(UiState.Failure::message).isNull()
+                isInstanceOf(State.Failure::class)
+                transform { it as State.Failure }.prop(State.Failure::message).isNull()
             }
 
             statusProviderFake.emit(WorkInfo.State.FAILED,
                 outputData = workDataOf(DataSyncWorker.FAILURE_MESSAGE_DATA to "Some failure message")
             )
             assertThat(awaitItem()).all {
-                isInstanceOf(UiState.Failure::class)
-                transform { it as UiState.Failure }.prop(UiState.Failure::message).isEqualTo("Some failure message")
+                isInstanceOf(State.Failure::class)
+                transform { it as State.Failure }.prop(State.Failure::message).isEqualTo("Some failure message")
             }
 
             ensureAllEventsConsumed()
