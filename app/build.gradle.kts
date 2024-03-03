@@ -3,6 +3,7 @@ plugins {
     alias(libs.plugins.jetbrains.kotlin.android)
     id("com.google.dagger.hilt.android")
     id("com.google.devtools.ksp")
+    id("com.diffplug.spotless")
 }
 
 android {
@@ -62,8 +63,9 @@ dependencies {
     implementation(project(":ui:word-details"))
     implementation(project(":ui:splash"))
     implementation(project(":feature:dictionary-sync"))
-    implementation("androidx.work:work-runtime-ktx:2.9.0")
-    implementation("androidx.hilt:hilt-work:1.2.0")
+
+    implementation(libs.androidx.work.runtime.ktx)
+    implementation(libs.androidx.hilt.work)
     implementation(libs.timber)
 
     runtimeOnly(project(":libs:data"))
