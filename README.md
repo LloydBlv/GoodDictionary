@@ -1,14 +1,7 @@
 # Good Dictionary
 
-## Screenshots
-
 <p float="left">
-  <img src="screenshots/1.png" width="200" />
-  <img src="screenshots/2.png" width="200" /> 
-  <img src="screenshots/3.png" width="200" />
-  <img src="screenshots/4.png" width="200" />
-  <img src="screenshots/5.png" width="200" />
-  <img src="screenshots/6.png" width="200" />
+  <img src="screenshots/output.gif" width="200" />
 </p>
 
 ## Introduction
@@ -46,6 +39,17 @@ Given the limited time allocated for this take-home task, the project showcases 
 - Modular architecture for focused development and faster build times.
 - State-of-the-art navigation and design with Compose Navigation and Material3.
 - Performance optimizations with Microbenchmarking, KSP, and Compose Metrics.
+
+## Screenshots
+
+<p float="left">
+  <img src="screenshots/1.png" width="200" />
+  <img src="screenshots/2.png" width="200" /> 
+  <img src="screenshots/3.png" width="200" />
+  <img src="screenshots/4.png" width="200" />
+  <img src="screenshots/5.png" width="200" />
+  <img src="screenshots/6.png" width="200" />
+</p>
 
 ## Getting Started
 
