@@ -26,7 +26,9 @@ class DatabaseSyncBenchmark(
         return Room.inMemoryDatabaseBuilder(
             ApplicationProvider.getApplicationContext(),
             AppDatabase::class.java
-        ).allowMainThreadQueries().build()
+        ).allowMainThreadQueries()
+          .fallbackToDestructiveMigration()
+          .build()
     }
 
     private fun createDiskDb(): AppDatabase {
@@ -34,7 +36,9 @@ class DatabaseSyncBenchmark(
             ApplicationProvider.getApplicationContext(),
             AppDatabase::class.java,
             "words_database"
-        ).allowMainThreadQueries().build()
+        ).allowMainThreadQueries()
+          .fallbackToDestructiveMigration()
+          .build()
     }
 
     private fun createDb(): AppDatabase {

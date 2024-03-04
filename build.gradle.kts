@@ -10,6 +10,7 @@ plugins {
   alias(libs.plugins.spotless) apply false
   alias(libs.plugins.benchmark) apply false
   alias(libs.plugins.hilt) apply false
+  id("com.savvasdalkitsis.module-dependency-graph") version "0.10"
 }
 
 subprojects {

@@ -7,6 +7,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import androidx.core.app.NotificationCompat
+import androidx.core.content.getSystemService
 import androidx.hilt.work.HiltWorker
 import androidx.work.CoroutineWorker
 import androidx.work.ExistingWorkPolicy
@@ -69,11 +70,11 @@ class DataSyncWorker @AssistedInject constructor(
       }
       val timeMs = measureTimeMillis {
         downloadAndInsertWords(urlString = DICTIONARY_DOWNLOAD_URL, progressCallback = {
-          Timber.e("progress=$it")
+          //TODO add some mechanism to slowdown publishing of progress
           setProgress(workDataOf(PROGRESS to it))
         })
       }
-      Timber.e("took " + timeMs + "ms to insert records")
+      Timber.wtf("took %sms to insert records", timeMs)
       syncResultManager.markSyncSuccess()
     } catch (ex: Exception) {
       Timber.e(ex, "While doWork")
@@ -132,7 +133,10 @@ class DataSyncWorker @AssistedInject constructor(
 
   private fun createForegroundInfo(): ForegroundInfo {
     val notificationManager =
-      applicationContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+      applicationContext.getSystemService<NotificationManager>()
+    requireNotNull(notificationManager) {
+      "notification manager was null, can not create the worker"
+    }
 
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
       val channel = NotificationChannel(

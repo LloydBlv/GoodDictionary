@@ -38,7 +38,7 @@ class RealDictionaryRepository @Inject constructor(
     return Pager(
       config = PagingConfig(pageSize = 100),
       initialKey = null,
-      pagingSourceFactory = { dao.filtered1("%$query%") },
+      pagingSourceFactory = { dao.filtered("%$query%") },
     ).flow.map {
       it.map { entity -> DictionaryWord(word = entity.word, id = entity.rowid) }
     }

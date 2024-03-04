@@ -10,6 +10,6 @@ class DictionaryRepositoryDefault @Inject constructor(
 
   override suspend fun sync(records: List<String>) {
     // TODO fix me, pass list instead
-    dictionaryInsert.insertUsingSqlite(records.asSequence())
+    dictionaryInsert.insertUsingDao(records.asSequence())
   }
 }

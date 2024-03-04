@@ -33,16 +33,16 @@ class DictionaryInsertDefault @Inject constructor(
   }
 
   private fun insertUsingBindings(
-    items: List<String>,
+    words: List<String>,
     db: SupportSQLiteDatabase,
   ) {
     val sql = "INSERT INTO words VALUES(?, ?)"
     val statement = db.compileStatement(sql)
     db.beginTransaction()
     try {
-      for (item in items) {
+      for (word in words) {
         statement.clearBindings()
-        statement.bindString(2, item)
+        statement.bindString(2, word)
         statement.executeInsert()
       }
       db.setTransactionSuccessful()
@@ -66,7 +66,8 @@ class DictionaryInsertDefault @Inject constructor(
         .onEach { insertUsingDao(it) }
       return
     }
-    words.onEach { database.wordDao().insert(WordEntity(word = it)) }
+    database.wordDao().insert(words.map { WordEntity(word = it) }.toList())
+//    words.onEach { database.wordDao().insert(WordEntity(word = it)) }
   }
 
   private fun insertUsingDao(it: List<String>) {
