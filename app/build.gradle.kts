@@ -35,6 +35,11 @@ android {
       excludes += "/META-INF/{AL2.0,LGPL2.1}"
     }
   }
+  lint {
+    enable += "ComposeM2Api"
+    error += "ComposeM2Api"
+    abortOnError = true
+  }
 }
 
 dependencies {
@@ -42,6 +47,8 @@ dependencies {
   implementation(projects.ui.wordDetails)
   implementation(projects.ui.splash)
   implementation(projects.feature.dictionarySync)
+
+  lintChecks(libs.compose.lint.checks)
 
   implementation(libs.androidx.work.runtime.ktx)
   implementation(libs.androidx.hilt.work)

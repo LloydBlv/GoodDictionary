@@ -83,7 +83,6 @@ private fun WordsScreenContent(modifier: Modifier, navigateToDetails: (id: Long)
 fun SyncStateUi() {
   val viewModel = hiltViewModel<WordsListViewModel>()
   val syncState: DictionarySyncStateWatcher.State by viewModel.state.collectAsState()
-  var isVisible by remember { mutableStateOf(false) }
   AnimatedVisibility(
     enter = fadeIn(animationSpec = tween(300)) +
       slideInVertically(
