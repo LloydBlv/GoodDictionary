@@ -15,6 +15,7 @@ import com.example.data.TestData
 import com.example.data.database.AppDatabase
 import com.example.data.database.WordEntity
 import com.example.data.database.WordsDao
+import java.util.concurrent.TimeUnit
 import kotlinx.coroutines.test.runTest
 import org.junit.After
 import org.junit.Before
@@ -22,125 +23,119 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
-import java.util.concurrent.TimeUnit
-
 
 @RunWith(RobolectricTestRunner::class)
 class WordsPagingSourceTest {
-    private lateinit var database: AppDatabase
-    private lateinit var dao: WordsDao
+  private lateinit var database: AppDatabase
+  private lateinit var dao: WordsDao
 
-    @JvmField
-    @Rule
-    val countingTaskExecutorRule = CountingTaskExecutorRule()
+  @JvmField
+  @Rule
+  val countingTaskExecutorRule = CountingTaskExecutorRule()
 
-    @Before
-    fun setup() {
-        database = Room.inMemoryDatabaseBuilder(
-            InstrumentationRegistry.getInstrumentation().context,
-            AppDatabase::class.java
-        ).allowMainThreadQueries().build()
-        dao = database.wordDao()
-    }
+  @Before
+  fun setup() {
+    database = Room.inMemoryDatabaseBuilder(
+      InstrumentationRegistry.getInstrumentation().context,
+      AppDatabase::class.java,
+    ).allowMainThreadQueries().build()
+    dao = database.wordDao()
+  }
 
-    @After
-    fun tearDown() {
-        database.close()
-        // At the end of all tests, query executor should be idle (transaction thread released).
-        countingTaskExecutorRule.drainTasks(500, TimeUnit.MILLISECONDS)
-        assertThat(countingTaskExecutorRule.isIdle).isTrue()
-    }
+  @After
+  fun tearDown() {
+    database.close()
+    // At the end of all tests, query executor should be idle (transaction thread released).
+    countingTaskExecutorRule.drainTasks(500, TimeUnit.MILLISECONDS)
+    assertThat(countingTaskExecutorRule.isIdle).isTrue()
+  }
 
-    @Test
-    fun `test all pages loads`() = runTest {
-        val source = dao.allWordsPaged()
-        val pager = TestPager(PagingConfig(pageSize = 1000), source)
-        val result = pager.refresh()
-        assertThat(result is Page).isTrue()
-        val page = pager.getLastLoadedPage()
-        assertThat(page).isNotNull()
-    }
+  @Test
+  fun `test all pages loads`() = runTest {
+    val source = dao.allWordsPaged()
+    val pager = TestPager(PagingConfig(pageSize = 1000), source)
+    val result = pager.refresh()
+    assertThat(result is Page).isTrue()
+    val page = pager.getLastLoadedPage()
+    assertThat(page).isNotNull()
+  }
 
-    @Test
-    fun `test pager loads first page`() = runTest {
-        val words = TestData.generateTestWords(dataSize = 5)
-        dao.insertAll(words)
-        assertThat(dao.getAllWords().all { it.sequence == 1L })
-        val source = dao.allWordsPaged()
-        val pager = TestPager(PagingConfig(pageSize = 1000), source)
+  @Test
+  fun `test pager loads first page`() = runTest {
+    val words = TestData.generateTestWords(dataSize = 5)
+    dao.insertAll(words)
+    val source = dao.allWordsPaged()
+    val pager = TestPager(PagingConfig(pageSize = 1000), source)
 
-        val result = pager.refresh() as Page
+    val result = pager.refresh() as Page
 
-        assertThat(result.data)
-            .isEqualTo(words)
+    assertThat(result.data)
+      .isEqualTo(words)
 
-        assertThat(
-            source.load(
-                PagingSource.LoadParams.Refresh(
-                    key = 0,
-                    loadSize = 500,
-                    placeholdersEnabled = false
-                )
-            )
-        ).isEqualTo(
-            Page(
-                data = words,
-                prevKey = null,
-                nextKey = null,
-                itemsAfter = 0,
-                itemsBefore = 0
-            )
-        )
+    assertThat(
+      source.load(
+        PagingSource.LoadParams.Refresh(
+          key = 0,
+          loadSize = 500,
+          placeholdersEnabled = false,
+        ),
+      ),
+    ).isEqualTo(
+      Page(
+        data = words,
+        prevKey = null,
+        nextKey = null,
+        itemsAfter = 0,
+        itemsBefore = 0,
+      ),
+    )
+  }
 
-    }
+  @Test
+  fun `test pager loads pages consecutively`() = runTest {
+    val words = TestData.generateTestWords(dataSize = 100)
+    dao.insertAll(words)
+    val source = dao.allWordsPaged()
+    val pager = TestPager(
+      PagingConfig(
+        pageSize = 2,
+        prefetchDistance = 1,
+        enablePlaceholders = false,
+        initialLoadSize = 1,
+      ),
+      source,
+    )
 
-    @Test
-    fun `test pager loads pages consecutively`() = runTest {
-        val words = TestData.generateTestWords(dataSize = 100)
-        dao.insertAll(words)
-        assertThat(dao.getAllWords().all { it.sequence == 1L })
-        val source = dao.allWordsPaged()
-        val pager = TestPager(
-            PagingConfig(
-                pageSize = 2,
-                prefetchDistance = 1,
-                enablePlaceholders = false,
-                initialLoadSize = 1
-            ), source
-        )
+    val result: Page<Int, WordEntity> = pager.refresh() as Page
 
-        val result: Page<Int, WordEntity> = pager.refresh() as Page
+    assertThat(result.data)
+      .isEqualTo(words.take(1))
 
-        assertThat(result.data)
-            .isEqualTo(words.take(1))
+    assertThat(
+      source.load(
+        PagingSource.LoadParams.Refresh(
+          key = 0,
+          loadSize = 2,
+          placeholdersEnabled = false,
+        ),
+      ),
+    ).isEqualTo(
+      Page(
+        data = words.take(2),
+        prevKey = null,
+        nextKey = 2,
+        itemsAfter = 98,
+        itemsBefore = 0,
+      ),
+    )
 
-        assertThat(
-            source.load(
-                PagingSource.LoadParams.Refresh(
-                    key = 0,
-                    loadSize = 2,
-                    placeholdersEnabled = false
-                )
-            )
-        ).isEqualTo(
-            Page(
-                data = words.take(2),
-                prevKey = null,
-                nextKey = 2,
-                itemsAfter = 98,
-                itemsBefore = 0
-            )
-        )
+    val page = with(pager) {
+      append()
+      append()
+      append()
+    } as Page
 
-        val page = with(pager) {
-            append()
-            append()
-            append()
-        } as Page
-
-        assertThat(page.data)
-            .hasSize(2)
-
-    }
-
+    assertThat(page.data)
+      .hasSize(2)
+  }
 }

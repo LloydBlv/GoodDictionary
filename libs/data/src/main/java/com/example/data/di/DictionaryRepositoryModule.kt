@@ -14,12 +14,12 @@ import dagger.hilt.components.SingletonComponent
 @Module
 @InstallIn(SingletonComponent::class)
 interface DictionaryRepositoryModule {
-    @Binds
-    fun provideDictionaryRepository(default: DictionaryRepositoryDefault): DictionaryLoader
+  @Binds
+  fun provideDictionaryRepository(default: DictionaryRepositoryDefault): DictionaryLoader
 
-    @Binds
-    fun provideSyncDictionary(default: DictionaryInsertDefault): DictionaryInsert
+  @Binds
+  fun provideSyncDictionary(default: DictionaryInsertDefault): DictionaryInsert
 
-    @Binds
-    fun provideDictionaryRepoReal(real: RealDictionaryRepository): DictionaryRepository
+  @Binds
+  fun provideDictionaryRepoReal(real: RealDictionaryRepository): DictionaryRepository
 }

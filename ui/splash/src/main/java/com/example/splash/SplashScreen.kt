@@ -24,80 +24,80 @@ import androidx.hilt.navigation.compose.hiltViewModel
 
 @Composable
 fun SplashScreen(
-    modifier: Modifier = Modifier,
-    navigateToWordsList: () -> Unit
+  modifier: Modifier = Modifier,
+  navigateToWordsList: () -> Unit,
 ) {
-    val viewModel = hiltViewModel<SplashViewModel>()
-    val syncState by viewModel.state.collectAsState()
-    SplashScreen(
-        modifier = modifier,
-        syncState = syncState,
-        navigateToWordsList = navigateToWordsList,
-        onRetryClicked = viewModel::onRetryClicked
-    )
+  val viewModel = hiltViewModel<SplashViewModel>()
+  val syncState by viewModel.state.collectAsState()
+  SplashScreen(
+    modifier = modifier,
+    syncState = syncState,
+    navigateToWordsList = navigateToWordsList,
+    onRetryClicked = viewModel::onRetryClicked,
+  )
 }
 
 @Composable
 fun SplashScreen(
-    modifier: Modifier = Modifier,
-    syncState: SplashViewModel.UiState,
-    navigateToWordsList: () -> Unit,
-    onRetryClicked: () -> Unit
+  modifier: Modifier = Modifier,
+  syncState: SplashViewModel.UiState,
+  navigateToWordsList: () -> Unit,
+  onRetryClicked: () -> Unit,
 ) {
-    val snackbarHostState = remember { SnackbarHostState() }
-    Scaffold(
-        snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
-        modifier = Modifier,
-        content = { SplashContent(modifier.padding(it), syncState) })
+  val snackbarHostState = remember { SnackbarHostState() }
+  Scaffold(
+    snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
+    modifier = Modifier,
+    content = { SplashContent(modifier.padding(it), syncState) },
+  )
 
+  LaunchedEffect(key1 = syncState) {
+    when (syncState) {
+      is SplashViewModel.UiState.Loaded -> {
+        navigateToWordsList.invoke()
+      }
 
-    LaunchedEffect(key1 = syncState) {
-        when (syncState) {
-            is SplashViewModel.UiState.Loaded -> {
-                navigateToWordsList.invoke()
-            }
-
-            is SplashViewModel.UiState.Progress -> {
-                val percent = syncState.percent
-                if (percent > 1) {
-                    navigateToWordsList.invoke()
-                }
-            }
-
-            is SplashViewModel.UiState.Failure -> {
-                val result = snackbarHostState.showSnackbar(
-                    message = syncState.message ?: "Something went wrong!",
-                    actionLabel = "Retry",
-                    duration = SnackbarDuration.Indefinite
-                )
-                if (result == SnackbarResult.ActionPerformed) {
-                    onRetryClicked.invoke()
-                }
-            }
-
-            else -> {}
+      is SplashViewModel.UiState.Progress -> {
+        val percent = syncState.percent
+        if (percent > 1) {
+          navigateToWordsList.invoke()
         }
+      }
+
+      is SplashViewModel.UiState.Failure -> {
+        val result = snackbarHostState.showSnackbar(
+          message = syncState.message ?: "Something went wrong!",
+          actionLabel = "Retry",
+          duration = SnackbarDuration.Indefinite,
+        )
+        if (result == SnackbarResult.ActionPerformed) {
+          onRetryClicked.invoke()
+        }
+      }
+
+      else -> {}
     }
+  }
 }
 
 @Composable
 private fun SplashContent(modifier: Modifier = Modifier, state: SplashViewModel.UiState) {
-    Box(
-        modifier = modifier,
-        contentAlignment = Alignment.Center
-    ) {
-        Text(
-            text = stringResource(R.string.good_dictionary),
-            modifier = Modifier.align(Alignment.Center),
-            style = MaterialTheme.typography.displayMedium
-        )
+  Box(
+    modifier = modifier,
+    contentAlignment = Alignment.Center,
+  ) {
+    Text(
+      text = stringResource(R.string.good_dictionary),
+      modifier = Modifier.align(Alignment.Center),
+      style = MaterialTheme.typography.displayMedium,
+    )
 
-        if (state.isLoading()) {
-            CircularProgressIndicator(
-                modifier = Modifier
-                    .size(32.dp)
-                    .align(Alignment.BottomCenter)
-            )
-        }
+    if (state.isLoading()) {
+      CircularProgressIndicator(
+        modifier = Modifier
+          .size(32.dp)
+          .align(Alignment.BottomCenter),
+      )
     }
+  }
 }
