@@ -20,6 +20,10 @@ Good Dictionary is structured into several modules, designed for scalability, ma
 - **Data Module (`data`)**: Responsible for data management, including storage, retrieval, and manipulation. It depends on the Domain module for data definitions.
 - **Domain Module (`domain`)**: Contains the business logic and use cases of the application. It is a dependency for all UI modules and the Data module.
 
+
+![Module Graph](screenshots/Screenshot%202024-03-04%20at%2006.29.28.png)
+
+
 Each UI module depends on the Domain module to ensure separation of concerns and modularity. The Data module also depends on the Domain module for defining data structures and business rules.
 
 ## Current State and Next Steps
