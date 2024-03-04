@@ -1,14 +1,7 @@
 # Good Dictionary
 
-## Screenshots
-
 <p float="left">
-  <img src="screenshots/1.png" width="200" />
-  <img src="screenshots/2.png" width="200" /> 
-  <img src="screenshots/3.png" width="200" />
-  <img src="screenshots/4.png" width="200" />
-  <img src="screenshots/5.png" width="200" />
-  <img src="screenshots/6.png" width="200" />
+  <img src="screenshots/output.gif" width="200" />
 </p>
 
 ## Introduction
@@ -26,6 +19,10 @@ Good Dictionary is structured into several modules, designed for scalability, ma
   - **Dictionary Sync (`:feature:dictionary-sync`)**: Manages synchronization of dictionary data with remote sources or local updates.
 - **Data Module (`data`)**: Responsible for data management, including storage, retrieval, and manipulation. It depends on the Domain module for data definitions.
 - **Domain Module (`domain`)**: Contains the business logic and use cases of the application. It is a dependency for all UI modules and the Data module.
+
+
+![Module Graph](screenshots/Screenshot%202024-03-04%20at%2006.29.28.png)
+
 
 Each UI module depends on the Domain module to ensure separation of concerns and modularity. The Data module also depends on the Domain module for defining data structures and business rules.
 
@@ -46,6 +43,17 @@ Given the limited time allocated for this take-home task, the project showcases 
 - Modular architecture for focused development and faster build times.
 - State-of-the-art navigation and design with Compose Navigation and Material3.
 - Performance optimizations with Microbenchmarking, KSP, and Compose Metrics.
+
+## Screenshots
+
+<p float="left">
+  <img src="screenshots/1.png" width="200" />
+  <img src="screenshots/2.png" width="200" /> 
+  <img src="screenshots/3.png" width="200" />
+  <img src="screenshots/4.png" width="200" />
+  <img src="screenshots/5.png" width="200" />
+  <img src="screenshots/6.png" width="200" />
+</p>
 
 ## Getting Started
 
