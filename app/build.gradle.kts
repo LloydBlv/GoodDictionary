@@ -3,6 +3,7 @@ plugins {
   id("com.gooddictionary.android.application")
   id("com.gooddictionary.hilt")
   alias(libs.plugins.spotless)
+  alias(libs.plugins.roborazzi)
 }
 
 android {
@@ -74,4 +75,12 @@ dependencies {
   androidTestImplementation(libs.androidx.ui.test.junit4)
   debugImplementation(libs.androidx.ui.tooling)
   debugImplementation(libs.androidx.ui.test.manifest)
+
+  testImplementation(libs.roborazzi)
+  testImplementation(libs.roborazzi.compose)
+  testImplementation(libs.roborazzi.rule)
+  testImplementation(libs.robolectric)
+  testImplementation(libs.androidx.ui.test.junit4)
+
+
 }

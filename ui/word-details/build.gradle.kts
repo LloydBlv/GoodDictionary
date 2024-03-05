@@ -2,6 +2,8 @@ plugins {
   id("com.gooddictionary.kotlin.android")
   id("com.gooddictionary.android.library")
   id("com.gooddictionary.hilt")
+  alias(libs.plugins.roborazzi)
+
 }
 
 android {
@@ -43,4 +45,8 @@ dependencies {
   testImplementation(libs.junit)
   androidTestImplementation(libs.androidx.junit)
   androidTestImplementation(libs.androidx.espresso.core)
+
+  testImplementation(libs.roborazzi)
+  testImplementation(libs.roborazzi.compose)
+  testImplementation(libs.roborazzi.rule)
 }
