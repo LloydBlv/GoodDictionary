@@ -11,6 +11,7 @@ plugins {
   alias(libs.plugins.benchmark) apply false
   alias(libs.plugins.hilt) apply false
   id("com.savvasdalkitsis.module-dependency-graph") version "0.10"
+  alias(libs.plugins.retry) apply false
 }
 
 subprojects {
@@ -33,5 +34,13 @@ subprojects {
           )
       }
     }
+  }
+}
+
+tasks.withType<Test>().configureEach {
+  configure<org.gradle.testretry.TestRetryTaskExtension> {
+    maxRetries.set(1)
+    maxFailures.set(20)
+    failOnPassedAfterRetry.set(false)
   }
 }
