@@ -1,5 +1,6 @@
 package com.example.worddetails
 
+import androidx.compose.runtime.Immutable
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -41,12 +42,13 @@ class DetailViewModel @Inject constructor(
       initialValue = DetailUiState(isLoading = true),
     )
 
-  fun deleteWord(wordId: Long) {
+  fun deleteWord() {
     viewModelScope.launch {
       deleteWordUseCase.get().invoke(wordId)
     }
   }
 
+  @Immutable
   data class DetailUiState(
     val isLoading: Boolean,
     val word: DictionaryWord? = null,

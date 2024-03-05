@@ -1,4 +1,4 @@
-package com.example.wordslist
+package com.example.words_list
 
 import androidx.paging.testing.asSnapshot
 import assertk.Assert
@@ -11,6 +11,7 @@ import com.example.domain.usecases.GetFilteredWordsUseCase
 import com.example.testing.DataSyncStatusFake
 import com.example.testing.FakeDictionaryRepo
 import com.example.testing.MainDispatcherRule
+import com.example.wordslist.WordsListViewModel
 import kotlin.time.Duration.Companion.seconds
 import kotlinx.coroutines.test.runTest
 import org.junit.Rule

@@ -1,4 +1,4 @@
-package com.example.word_details
+package com.example.worddetails
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.room.Room
@@ -21,7 +21,6 @@ import com.example.domain.usecases.GetWordsCountUseCase
 import com.example.domain.usecases.SyncDictionaryRecordsUseCase
 import com.example.testing.MainDispatcherRule
 import com.example.testing.TimberRule
-import com.example.worddetails.DetailViewModel
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
@@ -101,7 +100,7 @@ class DetailViewModelTest {
       getWordUseCase = GetWordUseCase(repository),
       savedStateHandle = SavedStateHandle(mapOf("wordId" to 1L))
     )
-    detailViewModel.deleteWord(1)
+    detailViewModel.deleteWord()
     repository.getCount().test {
       assertThat(awaitItem()).isEqualTo(999)
     }

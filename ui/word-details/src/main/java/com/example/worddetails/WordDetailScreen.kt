@@ -27,68 +27,108 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.worddetails.DetailViewModel.DetailUiState
 
 @Composable
 fun WordDetailScreen(
   modifier: Modifier = Modifier,
-  id: Long,
   onWordDeleted: () -> Unit,
   onBackPressed: () -> Unit,
 ) {
   val viewModel = hiltViewModel<DetailViewModel>()
-  val state: DetailViewModel.DetailUiState by viewModel.state.collectAsState()
+  val state: DetailUiState by viewModel.state.collectAsState()
+  WordDetailContent(
+    modifier = modifier,
+    state = state,
+    onBackPressed = onBackPressed,
+    onWordDeleted = onWordDeleted,
+    onDeleteWordClicked = viewModel::deleteWord
+  )
+}
+
+@Composable
+internal fun WordDetailContent(
+  modifier: Modifier = Modifier,
+  state: DetailUiState,
+  onBackPressed: () -> Unit,
+  onWordDeleted: () -> Unit,
+  onDeleteWordClicked: () -> Unit
+) {
   val snackbarHostState = remember { SnackbarHostState() }
+
   Scaffold(
     topBar = {
-      TopAppBar(
-        navigationIcon = {
-          IconButton(onClick = onBackPressed) {
-            Icon(
-              Icons.AutoMirrored.Default.ArrowBack,
-              contentDescription = stringResource(id = R.string.go_back),
-            )
-          }
-        },
-        title = {
-          Text(
-            text = if (state.count > 0) {
-              "Word details from ${state.count} words"
-            } else {
-              "Word details"
-            },
-          )
-        },
-      )
+      DetailTopAppBar(onBackPressed, state)
     },
     modifier = modifier,
     snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
   ) {
-    Box(
+    DetailContentView(
       modifier = modifier.padding(it),
-      contentAlignment = Alignment.Center,
-    ) {
-      when {
-        state.isLoading -> CircularProgressIndicator()
-
-        state.word != null ->
-          Text(
-            text = state.word!!.word,
-            fontSize = 55.sp,
-          )
-      }
-    }
+      isLoading = state.isLoading,
+      word = state.word?.word
+    )
   }
 
+  val removeThisWordText = stringResource(id = R.string.remove_this_word)
   LaunchedEffect(Unit) {
     val result = snackbarHostState.showSnackbar(
-      "Remove this word?",
+      removeThisWordText,
       actionLabel = "Yes, Remove!",
       withDismissAction = true,
       duration = SnackbarDuration.Indefinite,
     )
     if (result == SnackbarResult.ActionPerformed) {
-      viewModel.deleteWord(id)
+      onDeleteWordClicked()
       onWordDeleted.invoke()
     }
   }
+}
+
+@Composable
+private fun DetailContentView(
+  modifier: Modifier,
+  isLoading: Boolean,
+  word: String?,
+) {
+  Box(
+    modifier = modifier,
+    contentAlignment = Alignment.Center,
+  ) {
+    when {
+      isLoading -> CircularProgressIndicator()
+
+      word != null ->
+        Text(
+          text = word,
+          fontSize = 55.sp,
+        )
+    }
+  }
+}
+
+@Composable
+private fun DetailTopAppBar(
+  onBackPressed: () -> Unit,
+  state: DetailUiState
+) {
+  TopAppBar(
+    navigationIcon = {
+      IconButton(onClick = onBackPressed) {
+        Icon(
+          Icons.AutoMirrored.Default.ArrowBack,
+          contentDescription = stringResource(id = R.string.go_back),
+        )
+      }
+    },
+    title = {
+      Text(
+        text = if (state.count > 0) {
+          "Word details from ${state.count} words"
+        } else {
+          "Word details"
+        },
+      )
+    },
+  )
 }

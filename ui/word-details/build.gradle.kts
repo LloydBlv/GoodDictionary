@@ -15,6 +15,7 @@ android {
       )
     }
   }
+  testOptions.unitTests.isIncludeAndroidResources = true
   buildFeatures.compose = true
   composeOptions { kotlinCompilerExtensionVersion = "1.5.9" }
 }
@@ -29,6 +30,9 @@ dependencies {
   testImplementation(libs.robolectric)
   testImplementation(libs.hilt.android.testing)
   testImplementation(libs.androidx.core.testing)
+  testImplementation(libs.androidx.ui.test.junit4)
+  debugImplementation(libs.androidx.ui.test.manifest)
+  testImplementation(libs.mockk)
 
   implementation(projects.libs.domain)
   implementation(libs.androidx.material3)
