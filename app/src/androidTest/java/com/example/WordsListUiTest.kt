@@ -47,7 +47,6 @@ class WordsListUiTest {
     composeTestRule.mainClock.autoAdvance = false
     enableInternet()
     composeTestRule.onNodeWithText("Retry").performClick()
-//    TestUtil.delay(5)
   }
 
   private fun disableInternet() {

@@ -19,7 +19,7 @@ import kotlinx.coroutines.launch
 @HiltViewModel
 class DetailViewModel @Inject constructor(
   private val deleteWordUseCase: dagger.Lazy<DeleteWordUseCase>,
-  private val getWordsCount: GetWordsCountUseCase,
+  getWordsCount: GetWordsCountUseCase,
   getWordUseCase: GetWordUseCase,
   private val savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
@@ -28,8 +28,7 @@ class DetailViewModel @Inject constructor(
     get() = requireNotNull(savedStateHandle.get<Long>("wordId"))
 
   val state = combine(
-    getWordUseCase
-      .invoke(wordId),
+    getWordUseCase.invoke(wordId),
     getWordsCount.invoke(),
     ::Pair,
   )

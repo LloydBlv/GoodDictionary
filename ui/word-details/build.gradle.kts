@@ -20,6 +20,16 @@ android {
 }
 
 dependencies {
+  testImplementation(projects.common.testing)
+  testImplementation(projects.libs.data)
+  testImplementation(libs.androidx.room.ktx)
+  testImplementation(libs.assertk)
+  testImplementation(libs.kotlinx.coroutines.test)
+  testImplementation(libs.turbine)
+  testImplementation(libs.robolectric)
+  testImplementation(libs.hilt.android.testing)
+  testImplementation(libs.androidx.core.testing)
+
   implementation(projects.libs.domain)
   implementation(libs.androidx.material3)
   implementation(libs.androidx.hilt.navigation.compose)
