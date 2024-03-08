@@ -12,6 +12,7 @@ plugins {
   alias(libs.plugins.hilt) apply false
   id("com.savvasdalkitsis.module-dependency-graph") version "0.10"
   alias(libs.plugins.retry) apply false
+  id("com.osacky.doctor") version "0.9.2"
 }
 
 subprojects {

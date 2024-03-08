@@ -1,5 +1,5 @@
 [versions]
-agp = "8.4.0-alpha12"
+agp = "8.4.0-alpha13"
 assertk = "0.28.0"
 composeLintChecks = "1.3.1"
 coreKtxVersion = "1.5.0"
