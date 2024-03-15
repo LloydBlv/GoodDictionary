@@ -1,4 +1,4 @@
-package com.example.dictionarysync
+package com.example.data.sync
 
 import android.content.Context
 import androidx.work.WorkInfo
@@ -16,6 +16,6 @@ class DataSyncWorkerStatusDefault @Inject constructor(
   }
 
   override fun retrySync() {
-    DataSyncWorker.start(context)
+      DataSyncWorker.start(context)
   }
 }

@@ -5,7 +5,7 @@ import android.os.Build
 import android.os.StrictMode
 import androidx.hilt.work.HiltWorkerFactory
 import androidx.work.Configuration
-import com.example.dictionarysync.DataSyncWorker
+import com.example.domain.DataSyncWorkerStarter
 import dagger.hilt.android.HiltAndroidApp
 import javax.inject.Inject
 import timber.log.Timber
@@ -15,6 +15,9 @@ class GoodDictionaryApp : Application(), Configuration.Provider {
 
   @Inject
   lateinit var workerFactory: HiltWorkerFactory
+
+  @Inject
+  lateinit var dataSyncWorkerStarter: DataSyncWorkerStarter
 
   override val workManagerConfiguration: Configuration
     get() = Configuration.Builder()
@@ -27,7 +30,7 @@ class GoodDictionaryApp : Application(), Configuration.Provider {
       Timber.plant(Timber.DebugTree())
       setupStrictMode()
     }
-    DataSyncWorker.start(this)
+    dataSyncWorkerStarter.start()
   }
 
   private fun setupStrictMode() {

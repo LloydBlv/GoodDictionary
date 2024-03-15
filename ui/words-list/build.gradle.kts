@@ -21,7 +21,6 @@ android {
 
 dependencies {
   implementation(projects.libs.domain)
-  implementation(projects.feature.dictionarySync)
 
   implementation(libs.androidx.hilt.navigation.compose)
   implementation(libs.timber)

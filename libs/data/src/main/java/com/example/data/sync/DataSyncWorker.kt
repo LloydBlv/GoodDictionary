@@ -1,4 +1,4 @@
-package com.example.dictionarysync
+package com.example.data.sync
 
 import android.app.NotificationChannel
 import android.app.NotificationManager
@@ -17,6 +17,7 @@ import androidx.work.OutOfQuotaPolicy
 import androidx.work.WorkManager
 import androidx.work.WorkerParameters
 import androidx.work.workDataOf
+import com.example.domain.SyncResultManager
 import com.example.domain.usecases.SyncDictionaryRecordsUseCase
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject

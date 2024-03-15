@@ -1,4 +1,4 @@
-package com.example.dictionarysync
+package com.example.data.sync
 
 import androidx.work.WorkInfo
 import kotlinx.coroutines.flow.Flow

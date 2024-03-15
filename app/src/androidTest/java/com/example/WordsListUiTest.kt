@@ -15,6 +15,7 @@ import org.junit.runner.RunWith
 
 
 @RunWith(AndroidJUnit4::class)
+@HiltAndroidTest
 class WordsListUiTest {
 
   @get:Rule

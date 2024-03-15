@@ -45,7 +45,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
-import com.example.dictionarysync.DictionarySyncStateWatcher
+import com.example.domain.DictionarySyncStateWatcher
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable

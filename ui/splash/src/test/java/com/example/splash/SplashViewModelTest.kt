@@ -9,8 +9,6 @@ import assertk.assertions.isEqualTo
 import assertk.assertions.isInstanceOf
 import assertk.assertions.isNull
 import assertk.assertions.prop
-import com.example.dictionarysync.DataSyncWorker
-import com.example.dictionarysync.DictionarySyncStateWatcherDefault
 import com.example.splash.SplashViewModel.UiState
 import com.example.testing.DataSyncStatusFake
 import com.example.testing.MainDispatcherRule
@@ -28,7 +26,7 @@ class SplashViewModelTest {
     val statusProviderFake = DataSyncStatusFake()
 
     val stateWatcher = DictionarySyncStateWatcherDefault(
-      statusProvider = statusProviderFake,
+        statusProvider = statusProviderFake,
     )
     val viewModel = SplashViewModel(stateWatcher = stateWatcher)
 

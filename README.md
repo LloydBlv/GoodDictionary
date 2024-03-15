@@ -11,7 +11,7 @@ Welcome to Good Dictionary, a cutting-edge, efficient dictionary app crafted wit
 Good Dictionary is structured into several modules, designed for scalability, maintainability, and modular development. Here's an overview of our module architecture:
 
 - **App Module (`app`)**: The main entry point of the application, integrating all other modules and handling the app lifecycle.
-- **UI Modules**: 
+- **UI Modules**:
   - **Words List (`:ui:words-list`)**: Manages the presentation and interaction logic for listing dictionary words.
   - **Word Details (`:ui:word-details`)**: Handles the display of detailed information for a specific word.
   - **Splash Screen (`:ui:splash`)**: Presents the initial splash screen to users upon app launch.
@@ -27,7 +27,7 @@ Good Dictionary is structured into several modules, designed for scalability, ma
 Each UI module depends on the Domain module to ensure separation of concerns and modularity. The Data module also depends on the Domain module for defining data structures and business rules.
 
 ## Current State and Next Steps
-Given the limited time allocated for this take-home task, the project showcases a solid foundation and a glimpse into its potential. However, to fully realize this potential, the following steps are necessary:
+the project showcases a solid foundation and a glimpse into its potential. However, to fully realize this potential, the following steps are necessary:
 
 - **Increase Code Coverage**: Currently, only a limited number of tests have been written. Expanding test coverage is crucial for ensuring reliability and maintainability.
 - **Architecture Refinement**: Transitioning to a Unidirectional Data Flow (UDF) architecture from the current ViewModel usage could enhance the project's scalability and readability.
@@ -48,7 +48,7 @@ Given the limited time allocated for this take-home task, the project showcases 
 
 <p float="left">
   <img src="screenshots/1.png" width="200" />
-  <img src="screenshots/2.png" width="200" /> 
+  <img src="screenshots/2.png" width="200" />
   <img src="screenshots/3.png" width="200" />
   <img src="screenshots/4.png" width="200" />
   <img src="screenshots/5.png" width="200" />

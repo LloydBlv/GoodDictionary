@@ -47,7 +47,7 @@ dependencies {
   implementation(projects.ui.wordsList)
   implementation(projects.ui.wordDetails)
   implementation(projects.ui.splash)
-  implementation(projects.feature.dictionarySync)
+  implementation(projects.libs.domain)
 
   lintChecks(libs.compose.lint.checks)
 

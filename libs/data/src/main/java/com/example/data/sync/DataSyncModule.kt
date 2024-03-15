@@ -1,5 +1,8 @@
-package com.example.dictionarysync
+package com.example.data.sync
 
+import com.example.domain.DataSyncWorkerStarter
+import com.example.domain.DictionarySyncStateWatcher
+import com.example.domain.SyncResultManager
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -16,4 +19,7 @@ interface DataSyncModule {
 
   @Binds
   fun bindSyncStatus(status: DataSyncWorkerStatusDefault): DataSyncWorkerStatus
+
+  @Binds
+  fun bindWorkerStarter(default: DataSyncWorkerStarterDefault): DataSyncWorkerStarter
 }

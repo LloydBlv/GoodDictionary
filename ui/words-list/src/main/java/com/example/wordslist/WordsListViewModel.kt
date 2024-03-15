@@ -6,7 +6,7 @@ import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import androidx.paging.insertSeparators
 import androidx.paging.map
-import com.example.dictionarysync.DictionarySyncStateWatcher
+import com.example.domain.DictionarySyncStateWatcher
 import com.example.domain.DictionaryWord
 import com.example.domain.usecases.GetFilteredWordsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel

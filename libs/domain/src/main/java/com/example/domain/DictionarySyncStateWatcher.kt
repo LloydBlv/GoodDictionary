@@ -1,4 +1,4 @@
-package com.example.dictionarysync
+package com.example.domain
 
 import kotlinx.coroutines.flow.Flow
 

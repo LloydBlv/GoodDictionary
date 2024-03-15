@@ -31,7 +31,7 @@ android {
 }
 
 dependencies {
-  implementation(projects.feature.dictionarySync)
+  implementation(projects.libs.data)
   implementation(projects.libs.domain)
   implementation(libs.androidx.work.runtime.ktx)
   implementation(libs.timber)

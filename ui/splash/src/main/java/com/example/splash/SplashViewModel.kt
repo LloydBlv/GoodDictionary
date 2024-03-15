@@ -2,7 +2,8 @@ package com.example.splash
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.dictionarysync.DictionarySyncStateWatcher
+import com.example.domain.DictionarySyncStateWatcher
+import com.example.domain.DictionarySyncStateWatcher.State
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.flow.SharingStarted
@@ -20,13 +21,13 @@ class SplashViewModel @Inject constructor(
   val state = stateWatcher.watch()
     .map {
       when (it) {
-        DictionarySyncStateWatcher.State.Loaded -> UiState.Loaded
-        DictionarySyncStateWatcher.State.Loading -> UiState.Loading
-        is DictionarySyncStateWatcher.State.Progress -> UiState.Progress(it.percent)
-        DictionarySyncStateWatcher.State.Blocked -> UiState.Blocked
-        DictionarySyncStateWatcher.State.Cancelled -> UiState.Cancelled
-        is DictionarySyncStateWatcher.State.Failure -> UiState.Failure(it.message)
-        DictionarySyncStateWatcher.State.Unknown -> UiState.Unknown
+        State.Loaded -> UiState.Loaded
+        State.Loading -> UiState.Loading
+        is State.Progress -> UiState.Progress(it.percent)
+        State.Blocked -> UiState.Blocked
+        State.Cancelled -> UiState.Cancelled
+        is State.Failure -> UiState.Failure(it.message)
+        State.Unknown -> UiState.Unknown
       }
     }
     .stateIn(

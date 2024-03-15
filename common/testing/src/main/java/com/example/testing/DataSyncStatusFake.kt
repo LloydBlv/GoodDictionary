@@ -3,8 +3,7 @@ package com.example.testing
 import androidx.work.Data
 import androidx.work.WorkInfo
 import androidx.work.workDataOf
-import com.example.dictionarysync.DataSyncWorker
-import com.example.dictionarysync.DataSyncWorkerStatus
+import com.example.data.sync.DataSyncWorkerStatus
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 
@@ -20,7 +19,7 @@ class DataSyncStatusFake : DataSyncWorkerStatus {
   ) {
     status.emit(
       WorkInfo(
-        id = DataSyncWorker.ID,
+        id = com.example.data.sync.DataSyncWorker.ID,
         state = state,
         tags = tags,
         outputData = outputData,

@@ -1,4 +1,4 @@
-package com.example.dictionarysync
+package com.example.data
 
 import androidx.work.WorkInfo
 import androidx.work.workDataOf
@@ -9,7 +9,7 @@ import assertk.assertions.isEqualTo
 import assertk.assertions.isInstanceOf
 import assertk.assertions.isNull
 import assertk.assertions.prop
-import com.example.dictionarysync.DictionarySyncStateWatcher.State
+import com.example.domain.DictionarySyncStateWatcher.State
 import com.example.testing.DataSyncStatusFake
 import com.example.testing.MainDispatcherRule
 import kotlinx.coroutines.test.runTest
@@ -25,7 +25,7 @@ class StateWatcherTest {
   fun testWatcherState() = runTest {
     val statusProviderFake = DataSyncStatusFake()
 
-    val stateWatcher = DictionarySyncStateWatcherDefault(
+    val stateWatcher = com.example.data.sync.DictionarySyncStateWatcherDefault(
       statusProvider = statusProviderFake,
     )
 
@@ -67,7 +67,7 @@ class StateWatcherTest {
 
       statusProviderFake.emit(
         WorkInfo.State.FAILED,
-        outputData = workDataOf(DataSyncWorker.FAILURE_MESSAGE_DATA to "Some failure message"),
+        outputData = workDataOf(com.example.data.sync.DataSyncWorker.FAILURE_MESSAGE_DATA to "Some failure message"),
       )
       assertThat(awaitItem()).all {
         isInstanceOf(State.Failure::class)

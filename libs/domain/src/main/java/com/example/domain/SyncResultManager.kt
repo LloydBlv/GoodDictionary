@@ -1,4 +1,4 @@
-package com.example.dictionarysync
+package com.example.domain
 
 interface SyncResultManager {
   fun isFinished(): Boolean

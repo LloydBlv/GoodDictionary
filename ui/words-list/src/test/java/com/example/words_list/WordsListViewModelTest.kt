@@ -5,7 +5,7 @@ import assertk.Assert
 import assertk.assertThat
 import assertk.assertions.isTrue
 import assertk.assertions.size
-import com.example.dictionarysync.DictionarySyncStateWatcherDefault
+import com.example.data.sync.DictionarySyncStateWatcherDefault
 import com.example.domain.repository.DictionaryRepository
 import com.example.domain.usecases.GetFilteredWordsUseCase
 import com.example.testing.DataSyncStatusFake
@@ -30,7 +30,7 @@ class WordsListViewModelTest {
     val fakeRepository: DictionaryRepository = FakeDictionaryRepo(createWordsSequence(size = 1_000))
     val viewModel = WordsListViewModel(
       getFilteredWordUseCase = GetFilteredWordsUseCase(fakeRepository),
-      stateWatcher = DictionarySyncStateWatcherDefault(DataSyncStatusFake()),
+      stateWatcher = com.example.data.sync.DictionarySyncStateWatcherDefault(DataSyncStatusFake()),
     )
     val items = viewModel.pagingDataFlow
     val itemsSnapshot = items.asSnapshot {
@@ -53,7 +53,7 @@ class WordsListViewModelTest {
     val fakeRepository: DictionaryRepository = FakeDictionaryRepo(createWordsSequence(size = 1000_000))
     val viewModel = WordsListViewModel(
       getFilteredWordUseCase = GetFilteredWordsUseCase(fakeRepository),
-      stateWatcher = DictionarySyncStateWatcherDefault(DataSyncStatusFake()),
+      stateWatcher = com.example.data.sync.DictionarySyncStateWatcherDefault(DataSyncStatusFake()),
     )
     val items = viewModel.pagingDataFlow
     val itemsSnapshot = items.asSnapshot {

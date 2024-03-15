@@ -28,6 +28,10 @@ dependencies {
   ksp(libs.androidx.hilt.hilt.compiler)
   ksp(libs.dagger.hilt.compiler)
   ksp(libs.androidx.room.compiler)
+  implementation(libs.androidx.datastore.preferences)
+
+  implementation(libs.androidx.hilt.work)
+  implementation(libs.androidx.work.runtime.ktx)
 
   implementation(libs.androidx.room.paging)
   implementation(libs.androidx.core.ktx)
@@ -38,6 +42,7 @@ dependencies {
   androidTestImplementation(libs.androidx.junit)
   androidTestImplementation(libs.androidx.espresso.core)
 
+  testImplementation(projects.common.testing)
   testImplementation(libs.androidx.paging.testing)
   testImplementation(libs.turbine)
   testImplementation(libs.androidx.runner)

@@ -21,7 +21,6 @@ android {
 
 dependencies {
 
-  implementation(projects.feature.dictionarySync)
   implementation(projects.libs.domain)
 
   implementation(libs.androidx.work.runtime.ktx)

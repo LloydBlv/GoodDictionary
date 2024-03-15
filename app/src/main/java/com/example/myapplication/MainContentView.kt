@@ -58,7 +58,6 @@ internal fun MainContentView(modifier: Modifier = Modifier) {
           },
         ),
       ) {
-        val id = it.arguments?.getLong("wordId")!!
         WordDetailScreen(
           modifier = Modifier.fillMaxSize(),
           onWordDeleted = navController::navigateUp,

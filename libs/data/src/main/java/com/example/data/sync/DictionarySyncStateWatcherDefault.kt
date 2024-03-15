@@ -1,8 +1,9 @@
-package com.example.dictionarysync
+package com.example.data.sync
 
 import androidx.work.WorkInfo
 import androidx.work.WorkInfo.State as WorManagerState
-import com.example.dictionarysync.DictionarySyncStateWatcher.State as DictionaryState
+import com.example.domain.DictionarySyncStateWatcher.State as DictionaryState
+import com.example.domain.DictionarySyncStateWatcher
 import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map

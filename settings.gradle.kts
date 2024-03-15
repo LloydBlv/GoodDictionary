@@ -25,5 +25,4 @@ rootProject.name = "GoodDictionary"
 include(":app")
 include(":libs:data", ":libs:domain", ":libs:data:benchmark")
 include(":ui:words-list", ":ui:splash", ":ui:word-details")
-include(":feature:dictionary-sync")
 include(":common:testing")
