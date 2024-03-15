@@ -15,8 +15,6 @@ Good Dictionary is structured into several modules, designed for scalability, ma
   - **Words List (`:ui:words-list`)**: Manages the presentation and interaction logic for listing dictionary words.
   - **Word Details (`:ui:word-details`)**: Handles the display of detailed information for a specific word.
   - **Splash Screen (`:ui:splash`)**: Presents the initial splash screen to users upon app launch.
-- **Feature Module**:
-  - **Dictionary Sync (`:feature:dictionary-sync`)**: Manages synchronization of dictionary data with remote sources or local updates.
 - **Data Module (`data`)**: Responsible for data management, including storage, retrieval, and manipulation. It depends on the Domain module for data definitions.
 - **Domain Module (`domain`)**: Contains the business logic and use cases of the application. It is a dependency for all UI modules and the Data module.
 
